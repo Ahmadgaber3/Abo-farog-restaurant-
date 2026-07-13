@@ -6,7 +6,7 @@ const ASSETS = [
   './images/logooo.png'
 ];
 
-// تثبيت الـ Service Worker وحفظ الملفات الأساسية في الكاش
+// تثبيت السيرفس وركر وعمل الكاش الأساسي
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -15,7 +15,7 @@ self.addEventListener('install', (e) => {
   );
 });
 
-// تفعيل وتحديث الكاش
+// تفعيل السيرفس وركر
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) => {
@@ -30,7 +30,7 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// جلب الملفات حتى في حال عدم وجود إنترنت
+// استدعاء الملفات من الكاش عند انقطاع الإنترنت
 self.addEventListener('fetch', (e) => {
   e.respondWith(
     caches.match(e.request).then((cachedResponse) => {

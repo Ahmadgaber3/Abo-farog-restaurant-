@@ -1,21 +1,21 @@
 {
   "name": "بيتزا وفطائر أبو فاروق",
   "short_name": "أبو فاروق",
-  "description": "المنيو الرسمي لبيتزا وفطائر أبو فاروق - اطلب الآن أونلاين دليفري وتيك أواي",
+  "description": "المنيو الرسمي لمطعم بيتزا وفطائر أبو فاروق",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f4f5f7",
+  "background_color": "#0d0d0d",
   "theme-color": "#d45d00",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "./images/logooo.png",
+      "src": "images/logooo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "./images/logooo.png",
+      "src": "images/logooo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
