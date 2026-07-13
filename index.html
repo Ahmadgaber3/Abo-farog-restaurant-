@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بيتزا وفطائر أبو فاروق | المنيو الرسمي</title>
     
-    <!-- ربط ملف الـ Manifest لتجهيز التثبيت -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#d45d00">
     
@@ -157,26 +156,26 @@
 
         /* شريط التثبيت العائم الأسفل */
         .install-banner {
-            position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%) translateY(150px);
-            width: 90%; max-width: 400px; background: rgba(8, 8, 8, 0.95);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px;
-            padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); z-index: 1500;
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(150px);
+            width: 100%; max-width: 650px; background: #ffffff;
+            border-top: 1px solid rgba(0,0,0,0.08);
+            padding: 12px 18px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.08); z-index: 1500;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .install-banner.show { transform: translateX(-50%) translateY(0); }
-        .install-info { display: flex; align-items: center; gap: 10px; text-align: right; }
-        .install-icon { width: 40px; height: 40px; border-radius: 10px; object-fit: contain; background: #fff; padding: 3px; }
-        .install-text h4 { font-size: 0.85rem; font-weight: 800; color: #ffffff; }
-        .install-text p { font-size: 0.7rem; color: #ccc; font-weight: 600; }
-        .install-action-btn { background: var(--dark-orange); color: #ffffff; border: none; padding: 8px 16px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer; white-space: nowrap; box-shadow: var(--btn-shadow); }
-        .install-close { color: #aaa; font-size: 1.1rem; cursor: pointer; padding: 0 5px; margin-right: 5px; font-weight: bold; }
+        .install-info { display: flex; align-items: center; gap: 12px; text-align: right; }
+        .install-icon { width: 44px; height: 44px; border-radius: 10px; object-fit: contain; background: #fff; padding: 1px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .install-text h4 { font-size: 0.9rem; font-weight: 800; color: #111; }
+        .install-text p { font-size: 0.72rem; color: #666; font-weight: 600; margin-top: 1px; }
+        
+        .install-action-container { display: flex; align-items: center; gap: 12px; }
+        .install-action-btn { background: #853e00; color: #ffffff; border: none; padding: 8px 18px; border-radius: 8px; font-size: 0.8rem; font-weight: 800; cursor: pointer; white-space: nowrap; box-shadow: 0 3px 8px rgba(133, 62, 0, 0.2); }
+        .install-close { color: #888; font-size: 1.4rem; cursor: pointer; padding: 5px; font-weight: normal; line-height: 1; }
     </style>
 </head>
 <body>
 
-    <!-- شاشة التحميل -->
     <div id="splash-screen">
         <div class="loader-content">
             <img src="./images/logooo.png" class="loader-logo-big" alt="بيتزا وفطائر أبو فاروق">
@@ -196,7 +195,6 @@
             </div>
             <span class="header-title-text">بيتزا وفطائر أبو فاروق</span>
 
-            <!-- زرار السلة في اليسار -->
             <div class="header-left-actions">
                 <button class="cart-trigger" onclick="toggleCart(true)" id="cartBtn">
                     <span class="badge" id="cartBadge">0</span>
@@ -209,17 +207,18 @@
 
     <main id="menuList" class="menu-list"></main>
 
-    <!-- شريط التثبيت العائم السفلي -->
     <div class="install-banner" id="installBanner">
         <div class="install-info">
-            <span class="install-close" onclick="closeInstallBanner()">×</span>
             <img src="./images/logooo.png" class="install-icon" alt="لوجو">
             <div class="install-text">
-                <h4>تطبيق أبو فاروق</h4>
-                <p id="installDesc">ثبته الآن لطلب أسرع بدون تصفح!</p>
+                <h4>تطبيق أبو فاروق الرسمي</h4>
+                <p id="installDesc">ثبت التطبيق الآن لطلب أسرع بدون إنترنت!</p>
             </div>
         </div>
-        <button class="install-action-btn" id="installBtn">تثبيت التطبيق</button>
+        <div class="install-action-container">
+            <button class="install-action-btn" id="installBtn">تثبيت التطبيق</button>
+            <span class="install-close" onclick="closeInstallBanner()">×</span>
+        </div>
     </div>
 
     <footer class="restaurant-footer">
@@ -235,7 +234,6 @@
         </div>
     </footer>
 
-    <!-- مودال السلة -->
     <div class="modal" id="cartModal" onclick="if(event.target==this) toggleCart(false)">
         <div class="modal-content">
             <h3 style="margin-bottom: 12px; font-size: 1.1rem; font-weight: 800;">طلباتك</h3>
@@ -285,7 +283,7 @@
             if (isInStandaloneMode()) return;
 
             if (isIos()) {
-                installDesc.innerText = "اضغط على زر المشاركة ثم 'إضافة للشاشة الرئيسية'";
+                installDesc.innerText = "لتثبيت التطبيق: اضغط على زر 'مشاركة' في أسفل المتصفح ثم اختر 'إضافة إلى الشاشة الرئيسية'";
                 installBtn.innerText = "كيفية التثبيت؟";
                 
                 setTimeout(() => {
@@ -293,7 +291,7 @@
                 }, 2000);
 
                 installBtn.addEventListener('click', () => {
-                    alert("على أجهزة الآيفون 📱:\n1. اضغط على زر المشاركة في أسفل المتصفح (مربع طالع منه سهم).\n2. اسحب الخيارات واضغط على 'إضافة إلى الشاشة الرئيسية' (Add to Home Screen).");
+                    alert("على أجهزة الآيفون (iOS) 📱:\n1. اضغط على زر 'مشاركة' (Share) في أسفل متصفح سفاري.\n2. اسحب القائمة لأعلى واضغط على 'إضافة إلى الشاشة الرئيسية' (Add to Home Screen).");
                 });
             } else {
                 window.addEventListener('beforeinstallprompt', (e) => {
@@ -313,7 +311,7 @@
                         }
                         deferredPrompt = null;
                     } else {
-                        alert("يمكنك تثبيت التطبيق فوراً بالضغط على الثلاث نقط في أعلى المتصفح واختيار 'تثبيت التطبيق' أو 'إضافة للشاشة الرئيسية' 📱");
+                        alert("يمكنك تثبيت التطبيق مباشرةً بالضغط على النقاط الثلاث أعلى المتصفح واختيار 'تثبيت التطبيق' أو 'إضافة للشاشة الرئيسية' 📱");
                     }
                 });
             }
