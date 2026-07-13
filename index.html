@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بيتزا وفطائر أبو فاروق | المنيو الرسمي</title>
     
+    <!-- ربط ملف الـ Manifest لتجهيز التثبيت -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#d45d00">
     
@@ -127,7 +128,8 @@
         .add-btn.success-state { background-color: var(--success) !important; box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3) !important; font-size: 0.68rem; pointer-events: none; }
 
         .fly-item { position: fixed; z-index: 9999; pointer-events: none; width: 30px; height: 30px; background: var(--dark-orange); color: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
-        .restaurant-footer { padding: 30px 20px; text-align: center; background: var(--white); border-top: 1px solid rgba(0,0,0,0.05); margin-top: 30px; padding-bottom: 70px; /* زيادة الهامش عشان الزرار العائم ما يغطيش على الفوتر */ }
+        
+        .restaurant-footer { padding: 30px 20px; text-align: center; background: var(--white); border-top: 1px solid rgba(0,0,0,0.05); margin-top: 30px; padding-bottom: 90px; /* تم زيادة الهامش السفلي لعدم التغطية على زر التثبيت */ }
         .footer-phones a { display: inline-block; color: var(--dark-orange); text-decoration: none; font-weight: 800; font-size: 1.2rem; margin: 5px 10px; }
         .footer-rights { font-size: 0.8rem; color: var(--main-text); font-weight: 600; margin-bottom: 5px; }
         .dev-credit { font-size: 0.85rem; color: var(--desc-text); font-weight: 700; }
@@ -168,12 +170,13 @@
         .install-icon { width: 40px; height: 40px; border-radius: 10px; object-fit: contain; background: #fff; padding: 3px; }
         .install-text h4 { font-size: 0.85rem; font-weight: 800; color: #ffffff; }
         .install-text p { font-size: 0.7rem; color: #ccc; font-weight: 600; }
-        .install-action-btn { background: var(--dark-orange); color: #ffffff; border: none; padding: 6px 14px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer; white-space: nowrap; box-shadow: var(--btn-shadow); }
+        .install-action-btn { background: var(--dark-orange); color: #ffffff; border: none; padding: 8px 16px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer; white-space: nowrap; box-shadow: var(--btn-shadow); }
         .install-close { color: #aaa; font-size: 1.1rem; cursor: pointer; padding: 0 5px; margin-right: 5px; font-weight: bold; }
     </style>
 </head>
 <body>
 
+    <!-- شاشة التحميل -->
     <div id="splash-screen">
         <div class="loader-content">
             <img src="./images/logooo.png" class="loader-logo-big" alt="بيتزا وفطائر أبو فاروق">
@@ -193,6 +196,7 @@
             </div>
             <span class="header-title-text">بيتزا وفطائر أبو فاروق</span>
 
+            <!-- زرار السلة في اليسار -->
             <div class="header-left-actions">
                 <button class="cart-trigger" onclick="toggleCart(true)" id="cartBtn">
                     <span class="badge" id="cartBadge">0</span>
@@ -205,16 +209,17 @@
 
     <main id="menuList" class="menu-list"></main>
 
+    <!-- شريط التثبيت العائم السفلي -->
     <div class="install-banner" id="installBanner">
         <div class="install-info">
             <span class="install-close" onclick="closeInstallBanner()">×</span>
             <img src="./images/logooo.png" class="install-icon" alt="لوجو">
             <div class="install-text">
                 <h4>تطبيق أبو فاروق</h4>
-                <p>ثبته الآن لطلب أسرع بدون تصفح!</p>
+                <p id="installDesc">ثبته الآن لطلب أسرع بدون تصفح!</p>
             </div>
         </div>
-        <button class="install-action-btn" id="installBtn">تثبيت</button>
+        <button class="install-action-btn" id="installBtn">تثبيت التطبيق</button>
     </div>
 
     <footer class="restaurant-footer">
@@ -230,6 +235,7 @@
         </div>
     </footer>
 
+    <!-- مودال السلة -->
     <div class="modal" id="cartModal" onclick="if(event.target==this) toggleCart(false)">
         <div class="modal-content">
             <h3 style="margin-bottom: 12px; font-size: 1.1rem; font-weight: 800;">طلباتك</h3>
@@ -262,37 +268,67 @@
         let selectedOrderType = 'دليفري'; 
         let deferredPrompt;
 
-        // كود تشغيل وتفعيل التثبيت الذكي والزرار العائم
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            // إظهار البانر العائم بسلاسة بعد تحميل الموقع بـ 2 ثانية
-            setTimeout(() => {
-                const banner = document.getElementById('installBanner');
-                if (banner) banner.classList.add('show');
-            }, 2000);
+        const installBanner = document.getElementById('installBanner');
+        const installBtn = document.getElementById('installBtn');
+        const installDesc = document.getElementById('installDesc');
+
+        // كشف نوع الجهاز (هل هو آيفون/آيباد؟)
+        const isIos = () => {
+            const userAgent = window.navigator.userAgent.toLowerCase();
+            return /iphone|ipad|ipod/.test(userAgent);
+        }
+        
+        // هل التطبيق متثبت بالفعل ومفتوح كتطبيق مستقل؟
+        const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
+
+        // تشغيل ميزة التثبيت والزرار العائم
+        window.addEventListener('DOMContentLoaded', () => {
+            loadMenu();
+
+            if (isInStandaloneMode()) return; // لو العميل فاتحه كتطبيق مش هنعرض الزرار
+
+            if (isIos()) {
+                // للآيفون: عرض إرشادات آبل اليدوية الشيك
+                installDesc.innerText = "اضغط على زر المشاركة ثم 'إضافة للشاشة الرئيسية'";
+                installBtn.innerText = "كيفية التثبيت؟";
+                
+                setTimeout(() => {
+                    if (installBanner) installBanner.classList.add('show');
+                }, 2000);
+
+                installBtn.addEventListener('click', () => {
+                    alert("على أجهزة الآيفون 📱:\n1. اضغط على زر المشاركة في أسفل المتصفح (مربع طالع منه سهم).\n2. اسحب الخيارات واضغط على 'إضافة إلى الشاشة الرئيسية' (Add to Home Screen).");
+                });
+            } else {
+                // للأندرويد والكروم: تفعيل الحدث الرسمي
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    setTimeout(() => {
+                        if (installBanner) installBanner.classList.add('show');
+                    }, 2000);
+                });
+
+                installBtn.addEventListener('click', async () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        if (outcome === 'accepted') {
+                            closeInstallBanner();
+                        }
+                        deferredPrompt = null;
+                    } else {
+                        alert("يمكنك تثبيت التطبيق فوراً بالضغط على الثلاث نقط في أعلى المتصفح واختيار 'تثبيت التطبيق' أو 'إضافة للشاشة الرئيسية' 📱");
+                    }
+                });
+            }
         });
 
-        const installBtn = document.getElementById('installBtn');
-        if (installBtn) {
-            installBtn.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                        closeInstallBanner();
-                    }
-                    deferredPrompt = null;
-                }
-            });
-        }
-
         function closeInstallBanner() {
-            const banner = document.getElementById('installBanner');
-            if (banner) banner.classList.remove('show');
+            if (installBanner) installBanner.classList.remove('show');
         }
 
-        // تسجيل الـ Service Worker عشان التثبيت يشتغل صح
+        // تسجيل الـ Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
@@ -484,8 +520,6 @@
             msg += `──────────────\n💰 *الإجمالي النهائي:* ${currentTotal} جنيه\n_شكراً لاختياركم أبو فاروق_ ✨`;
             window.open(`https://wa.me/201145496172?text=${encodeURIComponent(msg)}`, '_blank');
         }
-
-        document.addEventListener("DOMContentLoaded", () => loadMenu());
     </script>
 </body>
 </html>
