@@ -10,7 +10,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="أبو فاروق">
-    <link class="brand-logo-icon" rel="apple-touch-icon" href="images/logooo.jpg">
+    <!-- تم تعديل اللوجو هنا إلى png -->
+    <link class="brand-logo-icon" rel="apple-touch-icon" href="images/logooo.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -101,7 +102,6 @@
             50% { transform: scale(1.04); box-shadow: 0 0 55px rgba(255, 132, 26, 0.9); } 
         }
         
-        /* هنا تم تصغير خط الاسم (كان 2.4rem وأصبح 1.7rem) */
         .loader-text { 
             font-weight: 800; 
             color: #ffffff; 
@@ -112,7 +112,6 @@
             opacity: 0;
         }
         
-        /* هنا تم تصغير خط الوصف/السلوجان (كان 1.2rem وأصبح 0.95rem) */
         .loader-slogan { 
             font-size: 0.95rem; 
             font-weight: 700; 
@@ -273,15 +272,16 @@
             display: flex; 
             flex-direction: row;
             justify-content: flex-start;
-            gap: 5px; 
+            gap: 6px; 
             width: fit-content;
             margin-top: 4px;
         }
+        /* تم تكبير الحجم والـ padding هنا بناءً على طلبك */
         .size-option { 
-            font-size: 0.65rem; 
+            font-size: 0.78rem; 
             font-weight: 800; 
-            padding: 2px 8px; 
-            border-radius: 5px; 
+            padding: 4px 12px; 
+            border-radius: 6px; 
             background: rgba(0,0,0,0.04); 
             cursor: pointer; 
             border: 1px solid transparent; 
@@ -480,11 +480,11 @@
     <!-- شاشة التحميل (Splash Screen) -->
     <div id="splash-screen">
         <div class="loader-content">
-            <img src="./images/logooo.jpg" class="loader-logo-big" alt="بيتزا وفطائر أبو فاروق">
+            <!-- تم تعديل اللوجو هنا إلى png -->
+            <img src="./images/logooo.png" class="loader-logo-big" alt="بيتزا وفطائر أبو فاروق">
             <h2 class="loader-text">مطعم أبو فاروق</h2>
             <p class="loader-slogan">طعم يأخذك في حتة ثانية 🍕🔥</p>
             
-            <!-- العداد وشريط التحميل تحت السلوجان مباشرة -->
             <div class="loader-counter" id="loadCounter">0%</div>
             <div class="loading-bar"><span id="loadProgress"></span></div>
         </div>
@@ -494,7 +494,8 @@
         <header>
             <div class="header-top">
                 <div class="header-logo-container">
-                    <img src="./images/logooo.jpg" class="header-logo" alt="لوجو أبو فاروق">
+                    <!-- تم تعديل اللوجو هنا إلى png -->
+                    <img src="./images/logooo.png" class="header-logo" alt="لوجو أبو فاروق">
                 </div>
                 <div class="cart-trigger-container">
                     <button class="cart-trigger" onclick="toggleCart(true)" id="cartBtn" aria-label="فتح السلة">
@@ -551,6 +552,7 @@
 
     <script>
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTuGjN3rD1beT3S7bKReqf4y5SwTGyeqL9Bcdl8G39iuWibSVEM9LST_I080t9JWHbG-5rAumG0FXmq/pub?output=csv';
+        // تم ترك مسار الصور الديناميكي للأصناف كما هو للاعتماد على صيغة التصنيفات
         const IMAGES_PATH = "./images/"; 
         let menuData = [], cart = [];
         let currentTotal = 0; 
