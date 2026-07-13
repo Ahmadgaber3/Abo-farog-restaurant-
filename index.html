@@ -88,9 +88,8 @@
         .header-logo { width: 100%; height: 100%; border-radius: 50%; object-fit: contain; }
         .header-title-text { font-size: 0.85rem; font-weight: 800; color: var(--desc-text); margin-top: 6px; }
         
-        /* زر السلة في اليسار */
+        /* زر السلة */
         .header-left-actions { position: absolute; left: 15px; top: 22px; display: flex; align-items: center; }
-
         .cart-trigger { background: #ffffff; color: var(--main-text); width: 45px; height: 45px; border-radius: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.4rem; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative; }
         .cart-trigger.shake { animation: cartShake 0.5s ease-in-out; }
         @keyframes cartShake { 0%, 100% { transform: scale(1) rotate(0deg); } 20%, 60% { transform: scale(1.1) rotate(-10deg); } 40%, 80% { transform: scale(1.1) rotate(10deg); } }
@@ -106,7 +105,7 @@
         .cat-item span { font-size: 0.75rem; font-weight: 700; color: var(--desc-text); margin-top: 6px; } 
         .cat-item.active span { color: var(--dark-orange); font-weight: 800; }
 
-        /* الكروت والأزرار */
+        /* الكروت والمنيو */
         .menu-list { padding: 10px 12px; max-width: 650px; margin: auto; min-height: 400px; }
         .food-card { background: var(--card-gradient); border-radius: 14px; margin-bottom: 8px; display: flex; padding: 8px 10px; gap: 12px; box-shadow: var(--card-shadow); border: 1px solid rgba(0,0,0,0.01); align-items: flex-start; }
         .card-right-block { display: flex; flex-direction: column; align-items: center; width: 95px; flex-shrink: 0; gap: 5px; }
@@ -155,55 +154,23 @@
         .type-btn.active { background: var(--dark-orange); color: #ffffff; border-color: var(--dark-orange); box-shadow: var(--btn-shadow); }
         .submit-btn { background: var(--dark-orange); color: #ffffff; border: none; padding: 12px; border-radius: 12px; width: 100%; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: var(--btn-shadow); }
 
-        /* ================= عناصر التثبيت ================= */
+        /* ================= عناصر التثبيت البسيطة ================= */
         
-        /* 1. الزر العائم للتثبيت */
+        /* زر التثبيت العائم النظيف */
         .floating-install-btn {
             position: fixed; bottom: 20px; left: 20px; background: linear-gradient(135deg, #d45d00 0%, #ff841a 100%);
             color: #ffffff; border: none; padding: 10px 16px; border-radius: 30px; font-weight: 800; font-size: 0.85rem;
-            box-shadow: 0 10px 25px rgba(212, 93, 0, 0.4); z-index: 1500; cursor: pointer; display: flex; align-items: center; gap: 6px;
+            box-shadow: 0 10px 25px rgba(212, 93, 0, 0.4); z-index: 1500; cursor: pointer; display: none; align-items: center; gap: 6px;
             animation: bounceBtn 2s infinite ease-in-out; border: 1.5px solid rgba(255, 255, 255, 0.2);
         }
         @keyframes bounceBtn { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 
-        /* 2. البنر السفلي اللطيف للتثبيت */
-        .bottom-install-banner {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.08); padding: 12px 16px; display: flex; align-items: center;
-            justify-content: space-between; z-index: 1600; border-top: 1px solid rgba(0,0,0,0.05);
-            animation: slideUpBanner 0.5s ease;
-        }
-        @keyframes slideUpBanner { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .banner-info { display: flex; align-items: center; gap: 10px; }
-        .banner-logo { width: 42px; height: 42px; border-radius: 10px; border: 1.5px solid #d45d00; object-fit: contain; }
-        .banner-text-title { font-size: 0.82rem; font-weight: 800; color: #111111; display: block; }
-        .banner-text-desc { font-size: 0.68rem; font-weight: 700; color: #666666; display: block; }
-        .banner-actions { display: flex; align-items: center; gap: 12px; }
-        .banner-btn { background: #d45d00; color: #ffffff; border: none; padding: 6px 14px; border-radius: 8px; font-weight: 800; font-size: 0.78rem; cursor: pointer; }
-        .banner-close { font-size: 1.1rem; color: #888888; cursor: pointer; font-weight: bold; padding: 4px 8px; }
-
-        /* 3. النوافذ الإرشادية لمتصفحات آيفون وأندرويد */
-        .install-guide-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6);
-            z-index: 3000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(4px);
-        }
-        .guide-box {
-            background: #ffffff; border-radius: 20px; width: 90%; max-width: 380px; padding: 24px; text-align: center;
-            position: relative; animation: zoomIn 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .guide-title { font-size: 1.15rem; font-weight: 800; color: #111111; margin-bottom: 12px; }
-        .guide-desc { font-size: 0.88rem; font-weight: 600; color: #555555; line-height: 1.6; margin-bottom: 20px; }
-        .guide-btn { background: #d45d00; color: #ffffff; border: none; padding: 10px 24px; border-radius: 10px; font-weight: 800; font-size: 0.9rem; cursor: pointer; width: 100%; }
-
         /* ========================================================
-           قاعدة ذهبية: إذا تم فتح الموقع كـ "تطبيق مثبت" (Standalone)
-           يتم إخفاء كافّة أزرار التثبيت نهائياً وفوراً من الـ CSS!
+           القاعدة الذهبية الفولاذية: إذا تم فتح الموقع كـ "تطبيق مثبت"
+           تختفي كلمة تثبيت تماماً من الـ CSS والـ HTML تلقائياً!
            ======================================================== */
         @media (display-mode: standalone) {
-            .floating-install-btn,
-            .bottom-install-banner,
-            .install-guide-overlay {
+            .floating-install-btn {
                 display: none !important;
             }
         }
@@ -242,39 +209,9 @@
 
     <main id="menuList" class="menu-list"></main>
 
-    <button class="floating-install-btn" id="floatInstallBtn" onclick="openInstallInstructions()" style="display: none;">
+    <button class="floating-install-btn" id="floatInstallBtn" onclick="triggerPWAInstall()">
         <span>📥</span> تثبيت التطبيق
     </button>
-
-    <div class="bottom-install-banner" id="bottomInstallBanner" style="display: none;">
-        <div class="banner-info">
-            <img src="./images/logooo.png" class="banner-logo" alt="لوجو">
-            <div>
-                <span class="banner-text-title">تطبيق أبو فاروق الرسمي</span>
-                <span class="banner-text-desc">ثبّت التطبيق الآن لطلب أسرع بدون إنترنت!</span>
-            </div>
-        </div>
-        <div class="banner-actions">
-            <button class="banner-btn" onclick="openInstallInstructions()">تثبيت</button>
-            <span class="banner-close" onclick="dismissBanner()">×</span>
-        </div>
-    </div>
-
-    <div class="install-guide-overlay" id="iosGuideOverlay" onclick="if(event.target==this) closeInstallInstructions()">
-        <div class="guide-box">
-            <h3 class="guide-title">تثبيت التطبيق على آيفون</h3>
-            <p class="guide-desc">يعرض موقع أبو فاروق إرشاد التثبيت:<br>اضغط على زر <b>'مشاركة' (Share)</b> في أسفل المتصفح ثم اختر <b>'إضافة إلى الشاشة الرئيسية' (Add to Home Screen)</b> 📲</p>
-            <button class="guide-btn" onclick="closeInstallInstructions()">حسناً</button>
-        </div>
-    </div>
-
-    <div class="install-guide-overlay" id="androidGuideOverlay" onclick="if(event.target==this) closeInstallInstructions()">
-        <div class="guide-box">
-            <h3 class="guide-title">تثبيت التطبيق على أندرويد</h3>
-            <p class="guide-desc">لتثبيت التطبيق فوراً:<br>اضغط على النقاط الثلاث أعلى المتصفح واطلب <b>'تثبيت التطبيق'</b> أو <b>'إضافة للشاشة الرئيسية'</b> 📱</p>
-            <button class="guide-btn" onclick="closeInstallInstructions()">حسناً</button>
-        </div>
-    </div>
 
     <footer class="restaurant-footer">
         <div class="footer-phones">
@@ -326,96 +263,52 @@
             initInstallCheck();
         });
 
-        // تسجيل الـ Service Worker لتمكين التثبيت
+        // تسجيل الـ Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js').catch(err => console.log(err));
             });
         }
 
-        // ================= برمجة إخفاء التثبيت عند فتحه كتطبيق =================
+        // ================= برمجة التثبيت السلسة للغاية =================
 
         function isAppInstalled() {
-            // التحقق من أن المستخدم يتصفح من داخل التطبيق المثبت بالفعل
+            // كشف فوري إذا كان العميل يتصفح من داخل التطبيق المثبت بالفعل
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
             const isIOSStandalone = window.navigator.standalone === true;
             return (isStandalone || isIOSStandalone);
         }
 
         function initInstallCheck() {
-            // إذا كان المستخدم داخل التطبيق المثبت، نخرج فوراً ولا نظهر أي بنر أو زر تثبيت
+            // إذا كان مثبت بالفعل ومفتوح كتطبيق، لا تفعل شيء ولا تظهر أي زر نهائياً
             if (isAppInstalled()) {
-                console.log("المستخدم يتصفح من داخل التطبيق المثبت بالفعل - إخفاء كل أزرار التثبيت.");
+                document.getElementById('floatInstallBtn').style.display = 'none';
                 return; 
             }
 
-            // التحقق من رفض المستخدم المسبق للبنر لتجنب إزعاجه دائماً
-            const isDismissed = localStorage.getItem('installBannerDismissed') === 'true';
-
-            // التقاط حدث التثبيت التلقائي لأندرويد/كروم
+            // التقاط حدث التثبيت عند توفره (مثل جوجل كروم في أندرويد) لإظهار الزر برفق
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
                 deferredPrompt = e;
-                
-                // إظهار زر التثبيت العائم والبنر إذا لم يكن المستخدم قد أغلق البنر مؤخراً
                 document.getElementById('floatInstallBtn').style.display = 'flex';
-                if (!isDismissed) {
-                    document.getElementById('bottomInstallBanner').style.display = 'flex';
-                }
             });
-
-            // لمتصفحات iOS التي لا تدعم beforeinstallprompt (نظهر لهم الأزرار يدوياً كدليل إرشادي)
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-            if (isIOS) {
-                document.getElementById('floatInstallBtn').style.display = 'flex';
-                if (!isDismissed) {
-                    document.getElementById('bottomInstallBanner').style.display = 'flex';
-                }
-            }
         }
 
-        function openInstallInstructions() {
+        function triggerPWAInstall() {
             if (deferredPrompt) {
-                // استدعاء التثبيت التلقائي في أندرويد
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        console.log('قام المستخدم بالموافقة وتثبيت التطبيق');
-                        hideAllInstallElements();
+                        document.getElementById('floatInstallBtn').style.display = 'none';
                     }
                     deferredPrompt = null;
                 });
-            } else {
-                // إظهار النافذة الإرشادية حسب نوع الجهاز إذا لم يتوفر التثبيت التلقائي
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                if (isIOS) {
-                    document.getElementById('iosGuideOverlay').style.display = 'flex';
-                } else {
-                    document.getElementById('androidGuideOverlay').style.display = 'flex';
-                }
             }
         }
 
-        function closeInstallInstructions() {
-            document.getElementById('iosGuideOverlay').style.display = 'none';
-            document.getElementById('androidGuideOverlay').style.display = 'none';
-        }
-
-        function dismissBanner() {
-            document.getElementById('bottomInstallBanner').style.display = 'none';
-            localStorage.setItem('installBannerDismissed', 'true');
-        }
-
-        function hideAllInstallElements() {
+        // إخفاء الزر فوراً عند إتمام عملية التثبيت بنجاح
+        window.addEventListener('appinstalled', () => {
             document.getElementById('floatInstallBtn').style.display = 'none';
-            document.getElementById('bottomInstallBanner').style.display = 'none';
-            closeInstallInstructions();
-        }
-
-        // الاستماع لحدث اكتمال التثبيت لإخفاء كل شيء مباشرة
-        window.addEventListener('appinstalled', (evt) => {
-            console.log('تم تثبيت التطبيق بنجاح!');
-            hideAllInstallElements();
         });
 
         // ================= بقية الكود الأساسي للموقع =================

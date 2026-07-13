@@ -1,4 +1,4 @@
-        const CACHE_NAME = 'abo-faroug-cache-v2';
+        const CACHE_NAME = 'abo-faroug-cache-v4';
 const ASSETS = [
   './',
   './index.html',
