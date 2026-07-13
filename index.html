@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بيتزا وفطائر أبو فاروق | المنيو الرسمي</title>
     
-    <!-- ربط ملف المانيفست -->
     <link rel="manifest" href="manifest.json">
     
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -50,9 +49,7 @@
             overflow-x: hidden; 
         }
 
-        /* ---------------------------------------------------- */
         /* تصميم شاشة التحميل والدخول */
-        /* ---------------------------------------------------- */
         #splash-screen {
             position: fixed; 
             top: 0; 
@@ -473,7 +470,7 @@
             box-shadow: var(--btn-shadow); 
         }
 
-        /* تنسيق بار تثبيت التطبيق السفلي الذكي */
+        /* بار التثبيت السفلي الصارم */
         #pwa-install-banner {
             position: fixed;
             bottom: 0;
@@ -504,7 +501,6 @@
 </head>
 <body>
 
-    <!-- شاشة التحميل (Splash Screen) -->
     <div id="splash-screen">
         <div class="loader-content">
             <img src="./images/logooo.png" class="loader-logo-big" alt="بيتزا وفطائر أبو فاروق">
@@ -575,7 +571,6 @@
         </div>
     </div>
 
-    <!-- شريط تثبيت التطبيق السفلي الذكي -->
     <div id="pwa-install-banner">
         <div class="banner-right">
             <img src="./images/logooo.png" class="banner-logo" alt="لوجو">
@@ -598,7 +593,7 @@
         let selectedOrderType = 'دليفري'; 
 
         // ----------------------------------------------------
-        // كود تشغيل وتفعيل الـ Service Worker وشريط التثبيت الذكي الفوري
+        // السيستم المباشر الفوري لاستدعاء نافذة الكروم الرسمية للتثبيت في ثانية واحدة
         // ----------------------------------------------------
         let deferredPrompt = null;
         const installBanner = document.getElementById('pwa-install-banner');
@@ -615,18 +610,18 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            // إظهار بار التثبيت فوراً بمجرد جاهزية المتصفح للتثبيت الفوري
+            // يظهر بار التثبيت السفلي فقط
             if (installBanner) installBanner.style.display = 'flex';
         });
 
         if (installBtn) {
             installBtn.addEventListener('click', () => {
+                // عند الضغط على الزرار البرتقالي، يستدعي فورا وبدون أي نوافذ وسيطة رسالة كروم الرسمية
                 if (deferredPrompt) {
-                    // تشغيل نافذة التثبيت الرسمية لكروم فوراً بدون أي رسائل وسيطة
                     deferredPrompt.prompt();
                     deferredPrompt.userChoice.then((choiceResult) => {
                         if (choiceResult.outcome === 'accepted') {
-                            console.log('User installed the PWA');
+                            console.log('User accepted the install prompt');
                         }
                         deferredPrompt = null;
                         if (installBanner) installBanner.style.display = 'none';
@@ -637,7 +632,6 @@
 
         function closePwaBanner() {
             if (installBanner) installBanner.style.display = 'none';
-            localStorage.setItem('pwaBannerClosed', 'true'); 
         }
         // ----------------------------------------------------
 
@@ -689,7 +683,7 @@
             return parseInt(cleanStr, 10) || 0;
         }
 
-        // دالة ربط العداد بتحميل الصور الفعلي في الخلفية
+        // دالة ربط العداد بتحميل الصور بالكامل في الخلفية لضمان عدم فتح الموقع إلا والصور جاهزة
         function preloadAllImages(imageUrls, callback) {
             if (imageUrls.length === 0) {
                 updateProgressUI(100);
@@ -702,12 +696,11 @@
 
             function imageLoadedOrFailed() {
                 loadedCount++;
-                // حساب النسبة المئوية الفعلية للصور التي تم تحميلها
                 const percentage = Math.floor((loadedCount / totalImages) * 100);
                 updateProgressUI(percentage);
 
                 if (loadedCount === totalImages) {
-                    setTimeout(callback, 200); // مهلة بسيطة لضمان السلاسة التامة
+                    setTimeout(callback, 300); 
                 }
             }
 
@@ -715,7 +708,7 @@
                 const img = new Image();
                 img.src = url;
                 img.onload = imageLoadedOrFailed;
-                img.onerror = imageLoadedOrFailed; // لو صورة مش موجودة نعديها عشان العداد ميعلقش
+                img.onerror = imageLoadedOrFailed; 
             });
         }
 
@@ -728,9 +721,7 @@
 
         async function loadMenu() {
             const timestamp = new Date().getTime();
-            
-            // أولاً: نقوم بتحميل البيانات من جوجل شيت
-            updateProgressUI(5); // بدء تحديث طفيف للبيانات
+            updateProgressUI(5); 
             
             try {
                 const res = await fetch(`${csvUrl}&t=${timestamp}`, { cache: "no-store" });
@@ -755,12 +746,10 @@
                     };
                 }).filter(Boolean);
 
-                // ثانياً: استخراج روابط كافة الصور المطلوبة للموقع بشكل فريد لتكشيشها بالكامل
                 const imagesToPreload = [
                     './images/logooo.png'
                 ];
                 
-                // إضافة صور الأقسام وصور الأكلات
                 menuData.forEach(item => {
                     const catImg = `${IMAGES_PATH}${item.category}.jpg`;
                     const foodImg = `${IMAGES_PATH}${item.name}.jpg`;
@@ -768,21 +757,18 @@
                     if (!imagesToPreload.includes(foodImg)) imagesToPreload.push(foodImg);
                 });
 
-                // ثالثاً: تشغيل سيستم البريلود الحقيقي وربطه بالعداد
                 preloadAllImages(imagesToPreload, () => {
                     if(menuData.length > 0) {
                         renderNav();
                     } else {
                         document.getElementById('menuList').innerHTML = '<p style="text-align:center; padding:20px;">عذراً، لا توجد بيانات متاحة حالياً.</p>';
                     }
-                    // إخفاء شاشة الـ Splash بعد اكتمال الصور تماماً بنسبة 100%
                     const splash = document.getElementById('splash-screen');
                     if(splash) splash.classList.add('splash-hidden');
                 });
 
             } catch (e) {
                 console.error(e);
-                // كود احتياطي في حالة انقطاع النت تماماً لتخطي الشاشة
                 updateProgressUI(100);
                 const splash = document.getElementById('splash-screen');
                 if(splash) splash.classList.add('splash-hidden');
