@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بيتزا وفطائر أبو فاروق | المنيو الرسمي</title>
     
+    <!-- كود نسف الكاش القديم تلقائياً عند التحميل -->
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -99,19 +100,30 @@
         .loading-bar span { display: block; width: 0; height: 100%; background: linear-gradient(90deg, #d45d00 0%, #ff841a 100%); box-shadow: 0 0 8px #ff841a; border-radius: 10px; }
         .splash-hidden { transform: translateY(-100%); pointer-events: none; }
 
-        /* الهيدر والقوائم */
+        /* الهيدر والقوائم المحدثة */
         .sticky-wrapper { position: sticky; top: 0; z-index: 1000; background: var(--header-bg); box-shadow: 0 2px 15px rgba(0,0,0,0.06); }
-        header { display: flex; flex-direction: column; align-items: center; padding: 10px 0; }
+        header { display: flex; flex-direction: column; align-items: center; padding: 10px 0; position: relative; }
         .header-top { width: 100%; display: flex; align-items: center; justify-content: center; position: relative; }
         .header-logo-container { width: 90px; height: 90px; border-radius: 50%; box-shadow: 0 4px 15px rgba(212, 93, 0, 0.15); overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .header-logo { width: 100%; height: 100%; border-radius: 50%; object-fit: contain; }
         .header-title-text { font-size: 0.85rem; font-weight: 800; color: var(--desc-text); margin-top: 6px; }
-        .cart-trigger-container { position: absolute; left: 15px; top: 22px; }
+        
+        /* أزرار الهيدر الجانبية */
+        .header-left-actions { position: absolute; left: 12px; top: 22px; display: flex; gap: 8px; align-items: center; }
+        .header-right-actions { position: absolute; right: 12px; top: 22px; display: flex; gap: 8px; align-items: center; }
+
         .cart-trigger { background: #ffffff; color: var(--main-text); width: 45px; height: 45px; border-radius: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.4rem; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative; }
         .cart-trigger.shake { animation: cartShake 0.5s ease-in-out; }
         @keyframes cartShake { 0%, 100% { transform: scale(1) rotate(0deg); } 20%, 60% { transform: scale(1.1) rotate(-10deg); } 40%, 80% { transform: scale(1.1) rotate(10deg); } }
         .badge { position: absolute; top: -5px; right: -5px; background: var(--dark-orange); color: #ffffff; font-size: 10px; font-weight: 800; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; transform: scale(0); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .badge.show { transform: scale(1); }
+
+        /* زرار مسح الكاش السريع الفوري */
+        .btn-clear-cache { background: #ffebeb; color: #ff3b30; width: 45px; height: 45px; border-radius: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; border: 1px solid rgba(255, 59, 48, 0.15); box-shadow: 0 2px 8px rgba(255, 59, 48, 0.05); }
+
+        /* زرار التثبيت الدائم بالهيدر */
+        .btn-header-install { background: var(--dark-orange); color: #ffffff; border: none; padding: 10px 14px; border-radius: 12px; font-size: 0.78rem; font-weight: 800; cursor: pointer; box-shadow: var(--btn-shadow); display: flex; align-items: center; gap: 4px; }
+        .btn-header-install:active { transform: scale(0.95); }
 
         .category-nav { display: flex; overflow-x: auto; white-space: nowrap; padding: 12px 15px; gap: 20px; scrollbar-width: none; background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 0.5px solid rgba(0,0,0,0.05); border-bottom: 0.5px solid rgba(0,0,0,0.05); }
         .category-nav::-webkit-scrollbar { display: none; }
@@ -144,15 +156,19 @@
         .add-btn.success-state { background-color: var(--success) !important; box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3) !important; font-size: 0.68rem; pointer-events: none; }
 
         .fly-item { position: fixed; z-index: 9999; pointer-events: none; width: 30px; height: 30px; background: var(--dark-orange); color: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
-        .restaurant-footer { padding: 30px 20px; text-align: center; background: var(--white); border-top: 1px solid rgba(0,0,0,0.05); margin-top: 30px; padding-bottom: 100px; } /* مسافة للبار */
+        .restaurant-footer { padding: 30px 20px; text-align: center; background: var(--white); border-top: 1px solid rgba(0,0,0,0.05); margin-top: 30px; padding-bottom: 40px; }
         .footer-phones a { display: inline-block; color: var(--dark-orange); text-decoration: none; font-weight: 800; font-size: 1.2rem; margin: 5px 10px; }
         .footer-rights { font-size: 0.8rem; color: var(--main-text); font-weight: 600; margin-bottom: 5px; }
         .dev-credit { font-size: 0.85rem; color: var(--desc-text); font-weight: 700; }
         .dev-credit a { color: var(--dark-orange); text-decoration: none; display: block; margin-top: 3px; }
 
-        /* السلة الاستمارة */
+        /* السلة والاستمارة ومودال التوجيه للتثبيت */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: none; justify-content: center; align-items: flex-end; backdrop-filter: blur(4px); }
         .modal-content { background: var(--white); width: 100%; max-width: 480px; padding: 16px 20px; border-radius: 22px 22px 0 0; max-height: 82vh; overflow-y: auto; color: var(--main-text); box-shadow: 0 -5px 25px rgba(0,0,0,0.1); }
+        
+        .modal-center { align-items: center; } /* للمودال بمنتصف الشاشة */
+        .modal-content-center { border-radius: 22px; width: 90%; max-width: 380px; text-align: center; margin: auto; }
+
         .cart-item-card { display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: rgba(0,0,0,0.02); border-radius: 12px; margin-bottom: 8px; }
         .cart-item-img { width: 42px; height: 42px; border-radius: 8px; object-fit: cover; }
         .cart-item-info { flex: 1; }
@@ -169,24 +185,15 @@
         .type-btn.active { background: var(--dark-orange); color: #ffffff; border-color: var(--dark-orange); box-shadow: var(--btn-shadow); }
         .submit-btn { background: var(--dark-orange); color: #ffffff; border: none; padding: 12px; border-radius: 12px; width: 100%; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: var(--btn-shadow); }
 
-        /* بار التثبيت السفلي الاحترافي */
-        #pwa-install-banner {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; border-top: 3px solid var(--dark-orange);
-            box-shadow: 0 -5px 25px rgba(0,0,0,0.15); z-index: 3000; display: none; align-items: center; justify-content: space-between; padding: 12px 16px;
-            animation: slideUpBanner 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        @keyframes slideUpBanner { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .banner-right { display: flex; align-items: center; gap: 10px; text-align: right; }
-        .banner-logo { width: 45px; height: 45px; border-radius: 50%; object-fit: contain; border: 1px solid rgba(0,0,0,0.05); }
-        .banner-info-title { font-size: 0.9rem; font-weight: 800; color: var(--main-text); }
-        .banner-info-desc { font-size: 0.72rem; font-weight: 600; color: var(--desc-text); }
-        .banner-left { display: flex; align-items: center; gap: 12px; }
-        .pwa-btn-install { background: var(--dark-orange); color: #ffffff; border: none; font-size: 0.8rem; font-weight: 800; padding: 8px 16px; border-radius: 8px; cursor: pointer; box-shadow: var(--btn-shadow); white-space: nowrap; }
-        .pwa-btn-close { background: none; border: none; color: #aaa; font-size: 1.2rem; cursor: pointer; font-weight: bold; padding: 4px; }
+        /* كلاس إرشاد التثبيت */
+        .instruction-step { display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.02); padding: 12px; border-radius: 12px; margin-top: 10px; text-align: right; }
+        .instruction-number { background: var(--dark-orange); color: #ffffff; font-weight: 800; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; }
+        .instruction-text { font-size: 0.85rem; font-weight: 700; color: var(--main-text); flex: 1; }
     </style>
 </head>
 <body>
 
+    <!-- شاشة التحميل -->
     <div id="splash-screen">
         <div class="loader-content">
             <img src="./images/logooo.png" class="loader-logo-big" alt="بيتزا وفطائر أبو فاروق">
@@ -199,18 +206,26 @@
 
     <div class="sticky-wrapper">
         <header>
+            <!-- الأزرار يمين الهيدر -->
+            <div class="header-right-actions">
+                <button class="btn-header-install" onclick="triggerPwaInstall()">📥 تثبيت</button>
+            </div>
+
             <div class="header-top">
                 <div class="header-logo-container">
                     <img src="./images/logooo.png" class="header-logo" alt="لوجو أبو فاروق">
                 </div>
-                <div class="cart-trigger-container">
-                    <button class="cart-trigger" onclick="toggleCart(true)" id="cartBtn">
-                        <span class="badge" id="cartBadge">0</span>
-                        <span>🛒</span>
-                    </button>
-                </div>
             </div>
             <span class="header-title-text">بيتزا وفطائر أبو فاروق</span>
+
+            <!-- الأزرار يسار الهيدر -->
+            <div class="header-left-actions">
+                <button class="btn-clear-cache" onclick="forceClearAppCache()" title="تحديث الكاش">🔄</button>
+                <button class="cart-trigger" onclick="toggleCart(true)" id="cartBtn">
+                    <span class="badge" id="cartBadge">0</span>
+                    <span>🛒</span>
+                </button>
+            </div>
         </header>
         <div class="category-nav" id="catNav"></div>
     </div>
@@ -230,6 +245,7 @@
         </div>
     </footer>
 
+    <!-- مودال السلة والدفع -->
     <div class="modal" id="cartModal" onclick="if(event.target==this) toggleCart(false)">
         <div class="modal-content">
             <h3 style="margin-bottom: 12px; font-size: 1.1rem; font-weight: 800;">طلباتك</h3>
@@ -254,17 +270,36 @@
         </div>
     </div>
 
-    <div id="pwa-install-banner">
-        <div class="banner-right">
-            <img src="./images/logooo.png" class="banner-logo" alt="لوجو">
-            <div>
-                <div class="banner-info-title" id="pwaTitle">تطبيق أبو فاروق</div>
-                <div class="banner-info-desc" id="pwaDesc">ثبّت التطبيق الآن لطلب أسرع!</div>
+    <!-- مودال إرشاد التثبيت للأجهزة العنيدة والآيفون -->
+    <div class="modal modal-center" id="installGuideModal" onclick="if(event.target==this) toggleInstallGuide(false)">
+        <div class="modal-content modal-content-center">
+            <img src="./images/logooo.png" style="width: 70px; height: 70px; border-radius: 50%; margin-bottom: 10px; border: 2px solid var(--dark-orange);" alt="لوجو">
+            <h3 style="font-weight: 800; font-size: 1.1rem; margin-bottom: 8px;">تثبيت تطبيق أبو فاروق</h3>
+            <p style="font-size: 0.82rem; color: var(--desc-text); margin-bottom: 15px;">اتبع الخطوات البسيطة التالية لتنزيل التطبيق على شاشتك الرئيسية مباشرة:</p>
+            
+            <div id="iosSteps" style="display: none;">
+                <div class="instruction-step">
+                    <div class="instruction-number">1</div>
+                    <div class="instruction-text">اضغط على زر المشاركة السفلي في المتصفح 📤</div>
+                </div>
+                <div class="instruction-step">
+                    <div class="instruction-number">2</div>
+                    <div class="instruction-text">اختر "إضافة إلى الشاشة الرئيسية" (Add to Home Screen) ➕</div>
+                </div>
             </div>
-        </div>
-        <div class="banner-left">
-            <button class="pwa-btn-install" id="pwaBtnInstall">تثبيت</button>
-            <button class="pwa-btn-close" onclick="closePwaBanner()">×</button>
+
+            <div id="androidSteps">
+                <div class="instruction-step">
+                    <div class="instruction-number">1</div>
+                    <div class="instruction-text">اضغط على زر الثلاث نقاط في أعلى أو أسفل المتصفح 🔍</div>
+                </div>
+                <div class="instruction-step">
+                    <div class="instruction-number">2</div>
+                    <div class="instruction-text">اضغط على "تثبيت التطبيق" أو "إضافة للشاشة الرئيسية" 📲</div>
+                </div>
+            </div>
+
+            <button class="submit-btn" style="margin-top: 20px;" onclick="toggleInstallGuide(false)">فهمت</button>
         </div>
     </div>
 
@@ -276,49 +311,69 @@
         let selectedOrderType = 'دليفري'; 
 
         // ----------------------------------------------------
-        // نظام التثبيت السفلي الذكي والآمن (بدون أي alert نهائياً)
+        // نظام مسح الكاش الفوري والكامل (تنظيف الذاكرة الإجباري)
+        // ----------------------------------------------------
+        function forceClearAppCache() {
+            if (confirm("هل تريد تحديث المنيو ومسح الذاكرة المؤقتة للتأكد من نزول أحدث الأسعار؟")) {
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                        for(let registration of registrations) {
+                            registration.unregister();
+                        }
+                    });
+                }
+                if ('caches' in window) {
+                    caches.keys().then(function(names) {
+                        for (let name of names) {
+                            caches.delete(name);
+                        }
+                    });
+                }
+                setTimeout(() => {
+                    // عمل تحديث إجباري كامل مع تجاهل الكاش المخزن بالمتصفح
+                    window.location.reload(true);
+                }, 500);
+            }
+        }
+
+        // ----------------------------------------------------
+        // نظام التثبيت الذكي والدائم بالهيدر
         // ----------------------------------------------------
         let deferredPrompt = null;
-        const installBanner = document.getElementById('pwa-install-banner');
-        const installBtn = document.getElementById('pwaBtnInstall');
-        const pwaDesc = document.getElementById('pwaDesc');
-
-        // كشف الأجهزة وتعديل التعليمات تلقائياً
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
-        window.addEventListener('load', () => {
-            if (isIOS) {
-                // إذا كان آيفون، اعرض البار بتعليمات واضحة وزرار بسيط للإرشاد
-                if (pwaDesc && installBtn) {
-                    pwaDesc.innerText = "اضغط على زر المشاركة 📤 ثم 'إضافة للشاشة الرئيسية'";
-                    installBtn.style.display = "none"; // إخفاء زر التثبيت المباشر لأنه لا يعمل على iOS
-                }
-                if (installBanner) installBanner.style.display = 'flex';
-            }
-        });
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            // إذا كان أندرويد/كروم، أظهر البار والزرار شغال
-            if (installBanner) installBanner.style.display = 'flex';
         });
 
-        if (installBtn) {
-            installBtn.addEventListener('click', () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    deferredPrompt.userChoice.then((choiceResult) => {
-                        deferredPrompt = null;
-                        if (installBanner) installBanner.style.display = 'none';
-                    });
-                }
-            });
+        function triggerPwaInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    deferredPrompt = null;
+                });
+            } else {
+                // إذا لم يتوفر الاختصار التلقائي، اعرض المودال الإرشادي الذكي حسب الجهاز
+                toggleInstallGuide(true);
+            }
         }
 
-        function closePwaBanner() {
-            if (installBanner) installBanner.style.display = 'none';
+        function toggleInstallGuide(show) {
+            const modal = document.getElementById('installGuideModal');
+            if(!modal) return;
+            if (show) {
+                modal.style.display = 'flex';
+                if (isIOS) {
+                    document.getElementById('iosSteps').style.display = 'block';
+                    document.getElementById('androidSteps').style.display = 'none';
+                } else {
+                    document.getElementById('iosSteps').style.display = 'none';
+                    document.getElementById('androidSteps').style.display = 'block';
+                }
+            } else {
+                modal.style.display = 'none';
+            }
         }
         // ----------------------------------------------------
 
@@ -496,7 +551,7 @@
 
         function sendToWA() {
             const n = document.getElementById('uName').value.trim(), p = document.getElementById('uPhone').value.trim(), a = document.getElementById('uAddr').value.trim();
-            if(!n || !p || (selectedOrderType === "دليفري" && !a) || cart.length === 0) return; // حماية إضافية ضد الـ alerts
+            if(!n || !p || (selectedOrderType === "دليفري" && !a) || cart.length === 0) return; 
             let msg = `*طلب جديد - بيتزا وفطائر أبو فاروق*\n──────────────\n👤 *الاسم:* ${n}\n📱 *الموبايل:* ${p}\n🛵 *نوع الطلب:* ${selectedOrderType}\n`;
             if (selectedOrderType === "دليفري") msg += `📍 *العنوان:* ${a}\n`;
             msg += `──────────────\n📦 *الطلبات:*\n`;
