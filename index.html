@@ -5,13 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بيتزا وفطائر أبو فاروق | المنيو الرسمي</title>
     
-    <link class="sw-manifest" rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#d45d00">
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="أبو فاروق">
-    <link rel="apple-touch-icon" href="./images/logooo.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -133,7 +127,7 @@
 
         .fly-item { position: fixed; z-index: 9999; pointer-events: none; width: 30px; height: 30px; background: var(--dark-orange); color: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
         
-        .restaurant-footer { padding: 30px 20px; text-align: center; background: var(--white); border-top: 1px solid rgba(0,0,0,0.05); margin-top: 30px; padding-bottom: 90px; }
+        .restaurant-footer { padding: 30px 20px; text-align: center; background: var(--white); border-top: 1px solid rgba(0,0,0,0.05); margin-top: 30px; padding-bottom: 40px; }
         .footer-phones a { display: inline-block; color: var(--dark-orange); text-decoration: none; font-weight: 800; font-size: 1.2rem; margin: 5px 10px; }
         .footer-rights { font-size: 0.8rem; color: var(--main-text); font-weight: 600; margin-bottom: 5px; }
         .dev-credit { font-size: 0.85rem; color: var(--desc-text); font-weight: 700; }
@@ -158,130 +152,6 @@
         .type-btn { flex: 1; padding: 8px; border-radius: 10px; border: 1.5px solid rgba(0,0,0,0.06); background: var(--bg); color: var(--main-text); font-weight: 800; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
         .type-btn.active { background: var(--dark-orange); color: #ffffff; border-color: var(--dark-orange); box-shadow: var(--btn-shadow); }
         .submit-btn { background: var(--dark-orange); color: #ffffff; border: none; padding: 12px; border-radius: 12px; width: 100%; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: var(--btn-shadow); }
-
-        /* تصميم زر التثبيت السفلي الأنيق */
-        .floating-install-btn {
-            position: fixed;
-            bottom: 25px;
-            left: 20px;
-            background: linear-gradient(135deg, #ff841a 0%, #d45d00 100%);
-            color: #ffffff;
-            border: none;
-            padding: 12px 22px;
-            border-radius: 50px;
-            font-weight: 800;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 8px 25px rgba(212, 93, 0, 0.4);
-            z-index: 9999;
-            cursor: pointer;
-            border: 2px solid #ffffff;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(0.8);
-        }
-
-        .floating-install-btn.show {
-            opacity: 1;
-            pointer-events: auto;
-            transform: scale(1);
-            animation: pulseGlow 2s infinite;
-        }
-
-        .floating-install-btn:active {
-            transform: scale(0.9);
-        }
-
-        .install-btn-icon {
-            font-size: 1.2rem;
-        }
-
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 8px 25px rgba(212, 93, 0, 0.4); }
-            50% { box-shadow: 0 8px 35px rgba(212, 93, 0, 0.7); }
-            100% { box-shadow: 0 8px 25px rgba(212, 93, 0, 0.4); }
-        }
-
-        /* نافذة مخصصة راقية مع زر تثبيت مباشر صريح */
-        .direct-install-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.75);
-            z-index: 10000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            padding: 20px;
-        }
-        .direct-install-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .direct-install-card {
-            background: #1c1c1e;
-            border: 2px solid #ff841a;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 380px;
-            padding: 25px 20px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transform: scale(0.8);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            color: #ffffff;
-        }
-        .direct-install-overlay.active .direct-install-card {
-            transform: scale(1);
-        }
-        .direct-install-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            display: inline-block;
-        }
-        .direct-install-title {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: #ff841a;
-            margin-bottom: 10px;
-        }
-        .direct-install-msg {
-            font-size: 0.95rem;
-            font-weight: 600;
-            line-height: 1.6;
-            color: #e5e5ea;
-            margin-bottom: 20px;
-        }
-        .direct-install-btn {
-            background: linear-gradient(135deg, #ff841a 0%, #d45d00 100%);
-            color: #ffffff;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 0.95rem;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(212, 93, 0, 0.3);
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        .direct-install-btn:active {
-            transform: scale(0.95);
-        }
-        .direct-close-btn {
-            background: transparent;
-            color: #aaa;
-            border: none;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
@@ -293,23 +163,6 @@
             <p class="loader-slogan">طعم يأخذك في حتة ثانية 🍕🔥</p>
             <div class="loader-counter" id="loadCounter">0%</div>
             <div class="loading-bar"><span id="loadProgress"></span></div>
-        </div>
-    </div>
-
-    <button id="floatingInstallBtn" class="floating-install-btn">
-        <span class="install-btn-icon">📥</span>
-        <span class="install-btn-text">تثبيت التطبيق</span>
-    </button>
-
-    <div class="direct-install-overlay" id="directInstallModal">
-        <div class="direct-install-card">
-            <span class="direct-install-icon">📱</span>
-            <h4 class="direct-install-title" id="modalTitle">تثبيت تطبيق أبو فاروق</h4>
-            <p class="direct-install-msg" id="modalMsg">احصل على تجربة تصفح وطلب أسرع بضغطة زر واحدة ومن شاشتك الرئيسية مباشرة!</p>
-            
-            <button class="direct-install-btn" id="modalSubmitBtn" onclick="executeActualInstallation()">تثبيت</button>
-            <br>
-            <button class="direct-close-btn" onclick="closeInstallModal()">إغلاق</button>
         </div>
     </div>
 
@@ -377,134 +230,9 @@
         let menuData = [], cart = [];
         let currentTotal = 0; 
         let selectedOrderType = 'دليفري'; 
-        let deferredPrompt;
-
-        const floatingBtn = document.getElementById('floatingInstallBtn');
-        const installModal = document.getElementById('directInstallModal');
-
-        const isIos = () => {
-            const userAgent = window.navigator.userAgent.toLowerCase();
-            return /iphone|ipad|ipod/.test(userAgent);
-        }
-        
-        const isInStandaloneMode = () => ('standalone' in window.navigator) || (window.navigator.standalone);
-
-        function openInstallModal(title, msg, isDirect) {
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalMsg').innerHTML = msg;
-            
-            const submitBtn = document.getElementById('modalSubmitBtn');
-            if (isDirect) {
-                submitBtn.innerText = "تثبيت";
-                submitBtn.style.display = "block";
-            } else {
-                // للآيفون لا يمكن عمل زر تثبيت مباشر، لذلك نحوله لإرشادات فقط
-                submitBtn.style.display = "none";
-            }
-            installModal.classList.add('active');
-        }
-
-        function closeInstallModal() {
-            installModal.classList.remove('active');
-        }
-
-        // تنفيذ طلب التثبيت البرمجي الرسمي للكروم والأندرويد عند ضغط الزر الصريح
-        async function executeActualInstallation() {
-            if (deferredPrompt) {
-                // إغلاق المودال أولاً لكي لا يحجب نافذة المتصفح الأصلية
-                closeInstallModal();
-                
-                // إطلاق نافذة كروم الرسمية فوراً
-                deferredPrompt.prompt(); 
-                
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    console.log('App successfully accepted!');
-                    hideInstallUI();
-                }
-                deferredPrompt = null;
-            }
-        }
-
-        // إخفاء الأزرار نهائياً بعد نجاح التثبيت
-        function hideInstallUI() {
-            if (floatingBtn) {
-                floatingBtn.classList.remove('show');
-                floatingBtn.style.display = 'none';
-            }
-            closeInstallModal();
-        }
-
-        // تسجيل الـ Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('SW Registered'))
-                    .catch(err => console.log('SW Failed', err));
-            });
-        }
 
         window.addEventListener('DOMContentLoaded', () => {
             loadMenu();
-
-            // إخفاء الـ UI إذا كان التطبيق مثبتاً ومفتوحاً بالفعل
-            if (isInStandaloneMode()) {
-                hideInstallUI();
-                return;
-            }
-
-            if (isIos()) {
-                // دعم الآيفون
-                if (floatingBtn) {
-                    floatingBtn.classList.add('show');
-                    floatingBtn.addEventListener('click', () => {
-                        openInstallModal(
-                            "🍎 تثبيت على الآيفون",
-                            "لتثبيت تطبيق أبو فاروق على جهازك:<br><br>1. اضغط على زر <b>'مشاركة'</b> أسفل المتصفح (مربع يخرج منه سهم).<br>2. اختر <b>'إضافة إلى الشاشة الرئيسية'</b> (Add to Home Screen).<br>3. اضغط على <b>'إضافة'</b> (Add) في الأعلى.",
-                            false
-                        );
-                    });
-                }
-            } else {
-                // دعم أندرويد وجوجل كروم
-                window.addEventListener('beforeinstallprompt', (e) => {
-                    e.preventDefault();
-                    deferredPrompt = e; 
-                    
-                    // إظهار زر التثبيت العائم فقط عندما يكون المتصفح مستعداً بنسبة 100%
-                    if (floatingBtn) {
-                        floatingBtn.classList.add('show');
-                    }
-                });
-
-                if (floatingBtn) {
-                    // نضمن إظهار الزر لكي يتفاعل معه المستخدم
-                    floatingBtn.classList.add('show');
-                    
-                    floatingBtn.addEventListener('click', () => {
-                        if (deferredPrompt) {
-                            // فتح النافذة المخصصة فوراً وبداخلها زر "تثبيت" الصريح
-                            openInstallModal(
-                                "🍕 تثبيت التطبيق",
-                                "هل ترغب في تثبيت تطبيق أبو فاروق على هاتفك للطلب السريع وحفظ طلباتك؟",
-                                true
-                            );
-                        } else {
-                            // في حال الفتح من داخل واتساب أو فيسبوك
-                            openInstallModal(
-                                "⚠️ متصفح غير مدعوم",
-                                "يرجى نسخ رابط الموقع وفتحه مباشرة عبر تطبيق <b>Google Chrome</b> لتتمكن من التثبيت المباشر بنجاح.",
-                                false
-                            );
-                        }
-                    });
-                }
-            }
-        });
-
-        // رصد نجاح عملية التثبيت لإخفاء الزر نهائياً
-        window.addEventListener('appinstalled', () => {
-            hideInstallUI();
         });
 
         function setOrderType(type) {
