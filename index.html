@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بيتزا وفطائر أبو فاروق | المنيو الرسمي</title>
     
-    <!-- ربط الـ Manifest لتمكين التثبيت الفوري -->
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#d45d00">
     
-    <!-- إضافة ميتا تاج للـ iOS (الآيفون) لدعم التثبيت -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="أبو فاروق">
@@ -283,7 +281,6 @@
 </head>
 <body>
 
-    <!-- شاشة التحميل -->
     <div id="splash-screen">
         <div class="loader-content">
             <img src="./images/logooo.png" class="loader-logo-big" alt="بيتزا وفطائر أبو فاروق">
@@ -294,13 +291,11 @@
         </div>
     </div>
 
-    <!-- زر التثبيت العائم الذكي -->
     <button id="floatingInstallBtn" class="floating-install-btn">
         <span class="install-btn-icon">📥</span>
         <span class="install-btn-text">تثبيت التطبيق</span>
     </button>
 
-    <!-- نافذة التنبيه المخصصة والبديلة لـ Alert المتصفح المزعجة -->
     <div class="custom-alert-overlay" id="customAlert">
         <div class="custom-alert-card">
             <span class="custom-alert-icon" id="alertIcon">📱</span>
@@ -319,7 +314,6 @@
             </div>
             <span class="header-title-text">بيتزا وفطائر أبو فاروق</span>
 
-            <!-- زرار السلة في اليسار -->
             <div class="header-left-actions">
                 <button class="cart-trigger" onclick="toggleCart(true)" id="cartBtn">
                     <span class="badge" id="cartBadge">0</span>
@@ -345,7 +339,6 @@
         </div>
     </footer>
 
-    <!-- مودال السلة -->
     <div class="modal" id="cartModal" onclick="if(event.target==this) toggleCart(false)">
         <div class="modal-content">
             <h3 style="margin-bottom: 12px; font-size: 1.1rem; font-weight: 800;">طلباتك</h3>
@@ -387,7 +380,7 @@
         
         const isInStandaloneMode = () => ('standalone' in window.navigator) || (window.navigator.standalone);
 
-        // تشغيل وإظهار نافذة التنبيه المخصصة بدلاً من الـ alert التقليدي
+        // تشغيل وإظهار نافذة التنبيه المخصصة عند الحاجة فقط
         function showCustomAlert(icon, title, message) {
             document.getElementById('alertIcon').innerText = icon;
             document.getElementById('alertTitle').innerText = title;
@@ -411,13 +404,13 @@
         window.addEventListener('DOMContentLoaded', () => {
             loadMenu();
 
-            // إخفاء الزر نهائياً إذا تم فتح الموقع كتطبيق مثبت بالفعل
+            // إخفاء زر التثبيت نهائياً إذا تم فتح الموقع كتطبيق مثبت بالفعل (Standalone)
             if (isInStandaloneMode()) {
                 if (floatingBtn) floatingBtn.style.display = 'none';
                 return;
             }
 
-            // تفعيل الزر لبيئة الآيفون لعرض شرح التثبيت المخصص
+            // تفعيل الزر لبيئة الآيفون لعرض شرح التثبيت المخصص للـ iOS
             if (isIos()) {
                 if (floatingBtn) {
                     floatingBtn.classList.add('show');
@@ -430,36 +423,45 @@
                     });
                 }
             } else {
-                // للأندرويد ومتصفح كروم
+                // للأندرويد وجوجل كروم
                 window.addEventListener('beforeinstallprompt', (e) => {
+                    // منع إظهار نافذة التثبيت التلقائية والمزعجة للمتصفح فوراً
                     e.preventDefault();
-                    deferredPrompt = e; // حفظ الحدث
+                    // الاحتفاظ بالحدث لاستدعائه برمجياً فور ضغط الزر السفلي
+                    deferredPrompt = e; 
                     
-                    // إظهار الزر العائم فوراً عندما يصبح التثبيت متاحاً
+                    // إظهار زر التثبيت العائم فوراً ليكون متاحاً وجاهزاً للضغط
                     if (floatingBtn) {
                         floatingBtn.classList.add('show');
                     }
                 });
 
-                // تأكيد تشغيل الزر حتى لو لم يدعم المتصفح الداخلي التثبيت المباشر
+                // تفعيل حدث الضغط على زر التثبيت السفلي
                 if (floatingBtn) {
-                    // نجعله يظهر افتراضياً لكي يتمكن الجميع من رؤية كيفية التثبيت
+                    // إظهار الزر لكي يجربه المستخدم
                     floatingBtn.classList.add('show');
 
                     floatingBtn.addEventListener('click', async () => {
+                        // في حال تم التعرف على حدث التثبيت الرسمي من المتصفح (مثال: جوجل كروم)
                         if (deferredPrompt) {
-                            deferredPrompt.prompt(); // إطلاق نافذة التثبيت الرسمية لكروم
+                            // إطلاق نافذة التثبيت الفورية الرسمية للمتصفح مباشرة بضغطة واحدة!
+                            deferredPrompt.prompt(); 
+                            
+                            // انتظار موافقة أو إلغاء المستخدم
                             const { outcome } = await deferredPrompt.userChoice;
                             if (outcome === 'accepted') {
+                                console.log('User accepted the install prompt');
                                 floatingBtn.classList.remove('show');
+                            } else {
+                                console.log('User dismissed the install prompt');
                             }
                             deferredPrompt = null;
                         } else {
-                            // التنبيه الراقي المخصص للأندرويد بدلاً من الـ alert
+                            // إذا فتح العميل الموقع من داخل متصفح خارجي مدمج (كواتساب أو فيسبوك) يمنع التثبيت المباشر
                             showCustomAlert(
-                                "🤖", 
-                                "تثبيت التطبيق", 
-                                "لتثبيت التطبيق فوراً والحصول على أسرع تجربة طلب:<br><br>اضغط على <b>النقاط الثلاث (⋮)</b> أعلى يسار المتصفح، ثم اختر <b>'تثبيت التطبيق'</b> أو <b>'إضافة إلى الشاشة الرئيسية'</b>."
+                                "⚠️", 
+                                "تنبيه التثبيت", 
+                                "يبدو أنك تفتح الرابط من داخل تطبيق خارجي (مثل واتساب أو فيسبوك).<br><br><b>لكي تتمكن من تثبيت التطبيق بضغطة واحدة وبشكل رسمي:</b><br>يرجى نسخ الرابط وفتحه مباشرة في متصفح <b>Google Chrome</b>."
                             );
                         }
                     });
