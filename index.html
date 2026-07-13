@@ -170,7 +170,6 @@
 
         .header-top { width: 100%; display: flex; align-items: center; justify-content: center; position: relative; }
         
-        /* تم تعديل الحاوية هنا (شيلنا الخلفية السوداء والحشو الداخلي) */
         .header-logo-container {
             width: 90px; height: 90px; 
             border-radius: 50%; background: transparent;
@@ -472,11 +471,38 @@
             cursor: pointer; 
             box-shadow: var(--btn-shadow); 
         }
+
+        /* تنسيق بار تثبيت التطبيق المخصص في أسفل الشاشة */
+        #pwa-install-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #ffffff;
+            border-top: 3px solid var(--dark-orange);
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.15);
+            z-index: 3000;
+            display: none; /* يتم إظهاره عبر الجافا سكريبت */
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            animation: slideUpBanner 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes slideUpBanner {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .banner-right { display: flex; align-items: center; gap: 10px; text-align: right;}
+        .banner-logo { width: 45px; height: 45px; border-radius: 50%; object-fit: contain; border: 1px solid rgba(0,0,0,0.05); }
+        .banner-info-title { font-size: 0.9rem; font-weight: 800; color: var(--main-text); }
+        .banner-info-desc { font-size: 0.72rem; font-weight: 600; color: var(--desc-text); }
+        .banner-left { display: flex; align-items: center; gap: 12px; }
+        .pwa-btn-install { background: var(--dark-orange); color: #ffffff; border: none; font-size: 0.8rem; font-weight: 800; padding: 8px 16px; border-radius: 8px; cursor: pointer; box-shadow: var(--btn-shadow); }
+        .pwa-btn-close { background: none; border: none; color: #aaa; font-size: 1.2rem; cursor: pointer; font-weight: bold; padding: 4px; }
     </style>
 </head>
 <body>
 
-    <!-- شاشة التحميل (Splash Screen) -->
     <div id="splash-screen">
         <div class="loader-content">
             <img src="./images/logooo.png" class="loader-logo-big" alt="بيتزا وفطائر أبو فاروق">
@@ -547,12 +573,80 @@
         </div>
     </div>
 
+    <div id="pwa-install-banner">
+        <div class="banner-right">
+            <img src="./images/logooo.png" class="banner-logo" alt="لوجو">
+            <div>
+                <div class="banner-info-title">تطبيق أبو فاروق الرسمي</div>
+                <div class="banner-info-desc font-weight: 600;">ثبّت التطبيق الآن لطلب أسرع بدون إنترنت!</div>
+            </div>
+        </div>
+        <div class="banner-left">
+            <button class="pwa-btn-install" id="pwaBtnInstall">تثبيت التطبيق</button>
+            <button class="pwa-btn-close" onclick="closePwaBanner()">×</button>
+        </div>
+    </div>
+
     <script>
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTuGjN3rD1beT3S7bKReqf4y5SwTGyeqL9Bcdl8G39iuWibSVEM9LST_I080t9JWHbG-5rAumG0FXmq/pub?output=csv';
         const IMAGES_PATH = "./images/"; 
         let menuData = [], cart = [];
         let currentTotal = 0; 
         let selectedOrderType = 'دليفري'; 
+
+        // ----------------------------------------------------
+        // كود تشغيل وتفعيل الـ Service Worker وشريط التثبيت الذكي
+        // ----------------------------------------------------
+        let deferredPrompt;
+        const installBanner = document.getElementById('pwa-install-banner');
+        const installBtn = document.getElementById('pwaBtnInstall');
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker Registered'))
+                    .catch(err => console.log('Service Worker Failed', err));
+            });
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // أول ما المتصفح يجهز إمكانية التثبيت، بيظهر البار فوراً للمستخدم
+            if (installBanner) installBanner.style.display = 'flex';
+        });
+
+        // كود احتياطي: لو العميل دخل على متصفح عادي ومظهرش الـ prompt التلقائي، البار بيظهر بعد 3 ثواني لتوجيه العميل
+        setTimeout(() => {
+            if (installBanner && installBanner.style.display !== 'flex' && !localStorage.getItem('pwaBannerClosed')) {
+                installBanner.style.display = 'flex';
+            }
+        }, 3000);
+
+        if (installBtn) {
+            installBtn.addEventListener('click', () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('User accepted the install prompt');
+                        }
+                        deferredPrompt = null;
+                        if (installBanner) installBanner.style.display = 'none';
+                    });
+                } else {
+                    // لو المتصفح ايفون أو لا يدعم التثبيت التلقائي المباشر
+                    alert("لتثبيت التطبيق: اضغط على زر 'مشاركة' (Share) في أسفل المتصفح ثم اختر 'إضافة إلى الشاشة الرئيسية' (Add to Home Screen) 📲");
+                    if (installBanner) installBanner.style.display = 'none';
+                }
+            });
+        }
+
+        function closePwaBanner() {
+            if (installBanner) installBanner.style.display = 'none';
+            localStorage.setItem('pwaBannerClosed', 'true'); // عشان ميزعجش العميل في كل مرة يدخل
+        }
+        // ----------------------------------------------------
 
         function setOrderType(type) {
             selectedOrderType = type;

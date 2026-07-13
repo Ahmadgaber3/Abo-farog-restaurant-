@@ -1,0 +1,21 @@
+{
+  "name": "بيتزا وفطائر أبو فاروق",
+  "short_name": "أبو فاروق",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0d0d0d",
+  "theme_color": "#d45d00",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "images/logooo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/logooo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
