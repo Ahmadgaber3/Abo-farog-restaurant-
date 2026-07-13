@@ -225,6 +225,11 @@
     </div>
 
     <script>
+        // كود لمنع ظهور شريط المتصفح التلقائي لتثبيت التطبيق
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+        });
+
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTuGjN3rD1beT3S7bKReqf4y5SwTGyeqL9Bcdl8G39iuWibSVEM9LST_I080t9JWHbG-5rAumG0FXmq/pub?output=csv';
         const IMAGES_PATH = "./images/"; 
         let menuData = [], cart = [];
