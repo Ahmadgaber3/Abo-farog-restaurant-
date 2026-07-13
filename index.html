@@ -206,6 +206,79 @@
             50% { box-shadow: 0 8px 35px rgba(212, 93, 0, 0.7); }
             100% { box-shadow: 0 8px 25px rgba(212, 93, 0, 0.4); }
         }
+
+        /* نافذة التنبيه المخصصة والراقية كبديل للـ Alert */
+        .custom-alert-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 20px;
+        }
+        .custom-alert-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .custom-alert-card {
+            background: #1c1c1e;
+            border: 2px solid #ff841a;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 380px;
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: #ffffff;
+        }
+        .custom-alert-overlay.active .custom-alert-card {
+            transform: scale(1);
+        }
+        .custom-alert-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: bounceIcon 1s infinite alternate;
+        }
+        @keyframes bounceIcon {
+            from { transform: translateY(0); }
+            to { transform: translateY(-8px); }
+        }
+        .custom-alert-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #ff841a;
+            margin-bottom: 10px;
+        }
+        .custom-alert-msg {
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.6;
+            color: #e5e5ea;
+            margin-bottom: 20px;
+        }
+        .custom-alert-btn {
+            background: linear-gradient(135deg, #ff841a 0%, #d45d00 100%);
+            color: #ffffff;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(212, 93, 0, 0.3);
+            width: 100%;
+        }
+        .custom-alert-btn:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body>
@@ -226,6 +299,16 @@
         <span class="install-btn-icon">📥</span>
         <span class="install-btn-text">تثبيت التطبيق</span>
     </button>
+
+    <!-- نافذة التنبيه المخصصة والبديلة لـ Alert المتصفح المزعجة -->
+    <div class="custom-alert-overlay" id="customAlert">
+        <div class="custom-alert-card">
+            <span class="custom-alert-icon" id="alertIcon">📱</span>
+            <h4 class="custom-alert-title" id="alertTitle">تثبيت التطبيق</h4>
+            <p class="custom-alert-msg" id="alertMsg">لتثبيت التطبيق فوراً، يرجى الضغط على النقاط الثلاث أعلى المتصفح واختيار "تثبيت التطبيق".</p>
+            <button class="custom-alert-btn" onclick="closeCustomAlert()">حسناً، فهمت</button>
+        </div>
+    </div>
 
     <div class="sticky-wrapper">
         <header>
@@ -304,6 +387,18 @@
         
         const isInStandaloneMode = () => ('standalone' in window.navigator) || (window.navigator.standalone);
 
+        // تشغيل وإظهار نافذة التنبيه المخصصة بدلاً من الـ alert التقليدي
+        function showCustomAlert(icon, title, message) {
+            document.getElementById('alertIcon').innerText = icon;
+            document.getElementById('alertTitle').innerText = title;
+            document.getElementById('alertMsg').innerHTML = message;
+            document.getElementById('customAlert').classList.add('active');
+        }
+
+        function closeCustomAlert() {
+            document.getElementById('customAlert').classList.remove('active');
+        }
+
         // تسجيل الـ Service Worker لتمكين التثبيت الفعلي
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -322,12 +417,16 @@
                 return;
             }
 
-            // تفعيل الزر لبيئة الآيفون لعرض شرح التثبيت
+            // تفعيل الزر لبيئة الآيفون لعرض شرح التثبيت المخصص
             if (isIos()) {
                 if (floatingBtn) {
                     floatingBtn.classList.add('show');
                     floatingBtn.addEventListener('click', () => {
-                        alert("لتثبيت تطبيق أبو فاروق على جهاز الآيفون (iOS) 📱:\n\n1. اضغط على زر 'مشاركة' (Share) أسفل المتصفح (مربع يخرج منه سهم).\n2. اسحب قائمة الخيارات واضغط على 'إضافة إلى الشاشة الرئيسية' (Add to Home Screen).\n3. اضغط على 'إضافة' (Add) في الزاوية العلوية.");
+                        showCustomAlert(
+                            "🍎", 
+                            "تثبيت على الآيفون", 
+                            "لتثبيت تطبيق أبو فاروق على جهازك:<br><br>1. اضغط على زر <b>'مشاركة'</b> أسفل المتصفح (مربع يخرج منه سهم).<br>2. اختر <b>'إضافة إلى الشاشة الرئيسية'</b> (Add to Home Screen).<br>3. اضغط على <b>'إضافة'</b> (Add) في الأعلى."
+                        );
                     });
                 }
             } else {
@@ -342,7 +441,11 @@
                     }
                 });
 
+                // تأكيد تشغيل الزر حتى لو لم يدعم المتصفح الداخلي التثبيت المباشر
                 if (floatingBtn) {
+                    // نجعله يظهر افتراضياً لكي يتمكن الجميع من رؤية كيفية التثبيت
+                    floatingBtn.classList.add('show');
+
                     floatingBtn.addEventListener('click', async () => {
                         if (deferredPrompt) {
                             deferredPrompt.prompt(); // إطلاق نافذة التثبيت الرسمية لكروم
@@ -352,7 +455,12 @@
                             }
                             deferredPrompt = null;
                         } else {
-                            alert("لتثبيت التطبيق فوراً:\nاضغط على النقاط الثلاث أعلى المتصفح واطلب 'تثبيت التطبيق' أو 'إضافة للشاشة الرئيسية' 📱");
+                            // التنبيه الراقي المخصص للأندرويد بدلاً من الـ alert
+                            showCustomAlert(
+                                "🤖", 
+                                "تثبيت التطبيق", 
+                                "لتثبيت التطبيق فوراً والحصول على أسرع تجربة طلب:<br><br>اضغط على <b>النقاط الثلاث (⋮)</b> أعلى يسار المتصفح، ثم اختر <b>'تثبيت التطبيق'</b> أو <b>'إضافة إلى الشاشة الرئيسية'</b>."
+                            );
                         }
                     });
                 }
