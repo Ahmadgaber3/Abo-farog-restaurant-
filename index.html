@@ -5,8 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بيتزا وفطائر أبو فاروق | المنيو الرسمي</title>
     
-    <link rel="manifest" href="manifest.json">
+    <!-- ربط الـ Manifest لتمكين التثبيت الفوري -->
+    <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#d45d00">
+    
+    <!-- إضافة ميتا تاج للـ iOS (الآيفون) لدعم التثبيت -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="أبو فاروق">
+    <link rel="apple-touch-icon" href="./images/logooo.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -154,28 +161,49 @@
         .type-btn.active { background: var(--dark-orange); color: #ffffff; border-color: var(--dark-orange); box-shadow: var(--btn-shadow); }
         .submit-btn { background: var(--dark-orange); color: #ffffff; border: none; padding: 12px; border-radius: 12px; width: 100%; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: var(--btn-shadow); }
 
-        /* شريط التثبيت العائم الأسفل */
+        /* شريط التثبيت العائم الأسفل (معدل بالكامل ليكون مطابقاً للصورة) */
         .install-banner {
-            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(150px);
-            width: 100%; max-width: 650px; background: #ffffff;
-            border-top: 1px solid rgba(0,0,0,0.08);
-            padding: 12px 18px; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.08); z-index: 1500;
+            position: fixed; 
+            bottom: 0; 
+            left: 50%; 
+            transform: translateX(-50%) translateY(150px);
+            width: 100%; 
+            max-width: 650px; 
+            background: #2b2b2b; /* داكن كالصورة */
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 16px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3); 
+            z-index: 1500;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .install-banner.show { transform: translateX(-50%) translateY(0); }
         .install-info { display: flex; align-items: center; gap: 12px; text-align: right; }
-        .install-icon { width: 44px; height: 44px; border-radius: 10px; object-fit: contain; background: #fff; padding: 1px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .install-text h4 { font-size: 0.9rem; font-weight: 800; color: #111; }
-        .install-text p { font-size: 0.72rem; color: #666; font-weight: 600; margin-top: 1px; }
+        .install-icon { width: 45px; height: 45px; border-radius: 50%; object-fit: contain; background: #fff; padding: 2px; border: 2px solid #ff841a; }
+        .install-text h4 { font-size: 0.9rem; font-weight: 800; color: #ffffff; }
+        .install-text p { font-size: 0.72rem; color: #ccc; font-weight: 600; margin-top: 2px; }
         
         .install-action-container { display: flex; align-items: center; gap: 12px; }
-        .install-action-btn { background: #853e00; color: #ffffff; border: none; padding: 8px 18px; border-radius: 8px; font-size: 0.8rem; font-weight: 800; cursor: pointer; white-space: nowrap; box-shadow: 0 3px 8px rgba(133, 62, 0, 0.2); }
-        .install-close { color: #888; font-size: 1.4rem; cursor: pointer; padding: 5px; font-weight: normal; line-height: 1; }
+        .install-action-btn { 
+            background: #8e3e00; /* اللون البني المائل للبرتقالي كالصورة */
+            color: #ffffff; 
+            border: none; 
+            padding: 8px 18px; 
+            border-radius: 8px; 
+            font-size: 0.85rem; 
+            font-weight: 800; 
+            cursor: pointer; 
+            white-space: nowrap; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+        }
+        .install-close { color: #aaaaaa; font-size: 1.5rem; cursor: pointer; padding: 5px; font-weight: bold; line-height: 1; }
     </style>
 </head>
 <body>
 
+    <!-- شاشة التحميل -->
     <div id="splash-screen">
         <div class="loader-content">
             <img src="./images/logooo.png" class="loader-logo-big" alt="بيتزا وفطائر أبو فاروق">
@@ -195,6 +223,7 @@
             </div>
             <span class="header-title-text">بيتزا وفطائر أبو فاروق</span>
 
+            <!-- زرار السلة في اليسار -->
             <div class="header-left-actions">
                 <button class="cart-trigger" onclick="toggleCart(true)" id="cartBtn">
                     <span class="badge" id="cartBadge">0</span>
@@ -207,12 +236,13 @@
 
     <main id="menuList" class="menu-list"></main>
 
+    <!-- شريط التثبيت العائم السفلي المحدث بالكامل -->
     <div class="install-banner" id="installBanner">
         <div class="install-info">
             <img src="./images/logooo.png" class="install-icon" alt="لوجو">
             <div class="install-text">
                 <h4>تطبيق أبو فاروق الرسمي</h4>
-                <p id="installDesc">ثبت التطبيق الآن لطلب أسرع بدون إنترنت!</p>
+                <p id="installDesc">ثبت التطبيق الآن لطلب أسرع وبدون إنترنت!</p>
             </div>
         </div>
         <div class="install-action-container">
@@ -234,6 +264,7 @@
         </div>
     </footer>
 
+    <!-- مودال السلة -->
     <div class="modal" id="cartModal" onclick="if(event.target==this) toggleCart(false)">
         <div class="modal-content">
             <h3 style="margin-bottom: 12px; font-size: 1.1rem; font-weight: 800;">طلباتك</h3>
@@ -275,43 +306,56 @@
             return /iphone|ipad|ipod/.test(userAgent);
         }
         
-        const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
+        const isInStandaloneMode = () => ('standalone' in window.navigator) || (window.navigator.standalone);
+
+        // تسجيل الـ Service Worker لتمكين التثبيت الفعلي
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker Registered Successfully!'))
+                    .catch(err => console.log('SW registration failed: ', err));
+            });
+        }
 
         window.addEventListener('DOMContentLoaded', () => {
             loadMenu();
 
+            // إذا كان التطبيق مثبت بالفعل لا تظهر شريط التثبيت
             if (isInStandaloneMode()) return;
 
+            // منطق أجهزة الآيفون (iOS)
             if (isIos()) {
-                installDesc.innerText = "لتثبيت التطبيق: اضغط على زر 'مشاركة' في أسفل المتصفح ثم اختر 'إضافة إلى الشاشة الرئيسية'";
+                installDesc.innerText = "لتثبيت التطبيق: اضغط على زر 'مشاركة' في أسفل سفاري ثم اختر 'إضافة إلى الشاشة الرئيسية'";
                 installBtn.innerText = "كيفية التثبيت؟";
                 
                 setTimeout(() => {
                     if (installBanner) installBanner.classList.add('show');
-                }, 2000);
+                }, 3000);
 
                 installBtn.addEventListener('click', () => {
-                    alert("على أجهزة الآيفون (iOS) 📱:\n1. اضغط على زر 'مشاركة' (Share) في أسفل متصفح سفاري.\n2. اسحب القائمة لأعلى واضغط على 'إضافة إلى الشاشة الرئيسية' (Add to Home Screen).");
+                    alert("لتثبيت تطبيق أبو فاروق على جهاز الآيفون (iOS) 📱:\n\n1. اضغط على زر 'مشاركة' (Share) أسفل المتصفح (مربع يخرج منه سهم).\n2. اسحب قائمة الخيارات واضغط على 'إضافة إلى الشاشة الرئيسية' (Add to Home Screen).\n3. اضغط على 'إضافة' (Add) في الزاوية العلوية.");
                 });
             } else {
+                // منطق الأندرويد والكروم (طلب التثبيت الرسمي للمتصفح)
                 window.addEventListener('beforeinstallprompt', (e) => {
                     e.preventDefault();
-                    deferredPrompt = e;
+                    deferredPrompt = e; // حفظ الحدث لعرضه عند الضغط على الزر
                     setTimeout(() => {
                         if (installBanner) installBanner.classList.add('show');
-                    }, 2000);
+                    }, 3000);
                 });
 
                 installBtn.addEventListener('click', async () => {
                     if (deferredPrompt) {
-                        deferredPrompt.prompt();
+                        deferredPrompt.prompt(); // إظهار نافذة التثبيت الرسمية للمتصفح
                         const { outcome } = await deferredPrompt.userChoice;
                         if (outcome === 'accepted') {
+                            console.log('User accepted the install prompt');
                             closeInstallBanner();
                         }
                         deferredPrompt = null;
                     } else {
-                        alert("يمكنك تثبيت التطبيق مباشرةً بالضغط على النقاط الثلاث أعلى المتصفح واختيار 'تثبيت التطبيق' أو 'إضافة للشاشة الرئيسية' 📱");
+                        alert("يمكنك تثبيت التطبيق الآن بسهولة بالضغط على النقاط الثلاث أعلى المتصفح واختيار 'تثبيت التطبيق' أو 'إضافة للشاشة الرئيسية' 📱");
                     }
                 });
             }
@@ -319,14 +363,6 @@
 
         function closeInstallBanner() {
             if (installBanner) installBanner.classList.remove('show');
-        }
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker Registered'))
-                    .catch(err => console.log('SW registration failed: ', err));
-            });
         }
 
         function setOrderType(type) {
