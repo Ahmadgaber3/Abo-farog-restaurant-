@@ -159,7 +159,7 @@
         .type-btn.active { background: var(--dark-orange); color: #ffffff; border-color: var(--dark-orange); box-shadow: var(--btn-shadow); }
         .submit-btn { background: var(--dark-orange); color: #ffffff; border: none; padding: 12px; border-radius: 12px; width: 100%; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: var(--btn-shadow); }
 
-        /* تصميم زر التثبيت العائم المحمي والمؤمن تماماً */
+        /* تصميم زر التثبيت السفلي النظيف والخالي من المشاكل */
         .floating-install-btn {
             position: fixed;
             bottom: 25px;
@@ -205,8 +205,8 @@
             100% { box-shadow: 0 8px 25px rgba(212, 93, 0, 0.4); }
         }
 
-        /* نافذة التنبيه المخصصة والراقية كبديل للـ Alert */
-        .custom-alert-overlay {
+        /* نافذة مخصصة للآيفون فقط (لأن أبل لا تدعم التثبيت الفوري الإجباري برمجياً) */
+        .ios-install-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.75);
@@ -219,11 +219,11 @@
             transition: opacity 0.3s ease;
             padding: 20px;
         }
-        .custom-alert-overlay.active {
+        .ios-install-overlay.active {
             opacity: 1;
             pointer-events: auto;
         }
-        .custom-alert-card {
+        .ios-install-card {
             background: #1c1c1e;
             border: 2px solid #ff841a;
             border-radius: 20px;
@@ -236,33 +236,28 @@
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             color: #ffffff;
         }
-        .custom-alert-overlay.active .custom-alert-card {
+        .ios-install-overlay.active .ios-install-card {
             transform: scale(1);
         }
-        .custom-alert-icon {
+        .ios-install-icon {
             font-size: 3rem;
             margin-bottom: 15px;
             display: inline-block;
-            animation: bounceIcon 1s infinite alternate;
         }
-        @keyframes bounceIcon {
-            from { transform: translateY(0); }
-            to { transform: translateY(-8px); }
-        }
-        .custom-alert-title {
+        .ios-install-title {
             font-size: 1.2rem;
             font-weight: 800;
             color: #ff841a;
             margin-bottom: 10px;
         }
-        .custom-alert-msg {
+        .ios-install-msg {
             font-size: 0.95rem;
             font-weight: 600;
             line-height: 1.6;
             color: #e5e5ea;
             margin-bottom: 20px;
         }
-        .custom-alert-btn {
+        .ios-install-btn {
             background: linear-gradient(135deg, #ff841a 0%, #d45d00 100%);
             color: #ffffff;
             border: none;
@@ -273,9 +268,6 @@
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(212, 93, 0, 0.3);
             width: 100%;
-        }
-        .custom-alert-btn:active {
-            transform: scale(0.95);
         }
     </style>
 </head>
@@ -296,12 +288,17 @@
         <span class="install-btn-text">تثبيت التطبيق</span>
     </button>
 
-    <div class="custom-alert-overlay" id="customAlert">
-        <div class="custom-alert-card">
-            <span class="custom-alert-icon" id="alertIcon">📱</span>
-            <h4 class="custom-alert-title" id="alertTitle">تثبيت التطبيق</h4>
-            <p class="custom-alert-msg" id="alertMsg">لتثبيت التطبيق فوراً، يرجى الضغط على النقاط الثلاث أعلى المتصفح واختيار "تثبيت التطبيق".</p>
-            <button class="custom-alert-btn" onclick="closeCustomAlert()">حسناً، فهمت</button>
+    <div class="ios-install-overlay" id="iosAlert">
+        <div class="ios-install-card">
+            <span class="ios-install-icon">🍎</span>
+            <h4 class="ios-install-title">تثبيت على الآيفون</h4>
+            <p class="ios-install-msg">
+                لتثبيت تطبيق أبو فاروق على جهازك:<br><br>
+                1. اضغط على زر <b>'مشاركة'</b> أسفل المتصفح (مربع يخرج منه سهم).<br>
+                2. اختر <b>'إضافة إلى الشاشة الرئيسية'</b> (Add to Home Screen).<br>
+                3. اضغط على <b>'إضافة'</b> (Add) في الأعلى.
+            </p>
+            <button class="ios-install-btn" onclick="closeIosAlert()">حسناً، فهمت</button>
         </div>
     </div>
 
@@ -380,16 +377,12 @@
         
         const isInStandaloneMode = () => ('standalone' in window.navigator) || (window.navigator.standalone);
 
-        // تشغيل وإظهار نافذة التنبيه المخصصة عند الحاجة فقط
-        function showCustomAlert(icon, title, message) {
-            document.getElementById('alertIcon').innerText = icon;
-            document.getElementById('alertTitle').innerText = title;
-            document.getElementById('alertMsg').innerHTML = message;
-            document.getElementById('customAlert').classList.add('active');
+        function showIosAlert() {
+            document.getElementById('iosAlert').classList.add('active');
         }
 
-        function closeCustomAlert() {
-            document.getElementById('customAlert').classList.remove('active');
+        function closeIosAlert() {
+            document.getElementById('iosAlert').classList.remove('active');
         }
 
         // تسجيل الـ Service Worker لتمكين التثبيت الفعلي
@@ -404,22 +397,18 @@
         window.addEventListener('DOMContentLoaded', () => {
             loadMenu();
 
-            // إخفاء زر التثبيت نهائياً إذا تم فتح الموقع كتطبيق مثبت بالفعل (Standalone)
+            // 1. إخفاء الزر نهائياً إذا تم فتح الموقع كتطبيق مثبت بالفعل (Standalone)
             if (isInStandaloneMode()) {
                 if (floatingBtn) floatingBtn.style.display = 'none';
                 return;
             }
 
-            // تفعيل الزر لبيئة الآيفون لعرض شرح التثبيت المخصص للـ iOS
+            // 2. تفعيل التثبيت للآيفون (iOS)
             if (isIos()) {
                 if (floatingBtn) {
                     floatingBtn.classList.add('show');
                     floatingBtn.addEventListener('click', () => {
-                        showCustomAlert(
-                            "🍎", 
-                            "تثبيت على الآيفون", 
-                            "لتثبيت تطبيق أبو فاروق على جهازك:<br><br>1. اضغط على زر <b>'مشاركة'</b> أسفل المتصفح (مربع يخرج منه سهم).<br>2. اختر <b>'إضافة إلى الشاشة الرئيسية'</b> (Add to Home Screen).<br>3. اضغط على <b>'إضافة'</b> (Add) في الأعلى."
-                        );
+                        showIosAlert();
                     });
                 }
             } else {
@@ -430,42 +419,42 @@
                     // الاحتفاظ بالحدث لاستدعائه برمجياً فور ضغط الزر السفلي
                     deferredPrompt = e; 
                     
-                    // إظهار زر التثبيت العائم فوراً ليكون متاحاً وجاهزاً للضغط
+                    // إظهار زر التثبيت العائم فوراً عندما يصبح المتصفح جاهزاً ومستعداً للتثبيت الفوري
                     if (floatingBtn) {
                         floatingBtn.classList.add('show');
                     }
                 });
 
-                // تفعيل حدث الضغط على زر التثبيت السفلي
+                // تفعيل حدث الضغط على زر التثبيت السفلي للأندرويد
                 if (floatingBtn) {
-                    // إظهار الزر لكي يجربه المستخدم
-                    floatingBtn.classList.add('show');
-
                     floatingBtn.addEventListener('click', async () => {
-                        // في حال تم التعرف على حدث التثبيت الرسمي من المتصفح (مثال: جوجل كروم)
+                        // إطلاق نافذة التثبيت الفورية الرسمية للمتصفح مباشرة بضغطة واحدة وبدون أي ألارم!
                         if (deferredPrompt) {
-                            // إطلاق نافذة التثبيت الفورية الرسمية للمتصفح مباشرة بضغطة واحدة!
                             deferredPrompt.prompt(); 
                             
-                            // انتظار موافقة أو إلغاء المستخدم
+                            // انتظار اختيار المستخدم (موافق أو إلغاء)
                             const { outcome } = await deferredPrompt.userChoice;
                             if (outcome === 'accepted') {
                                 console.log('User accepted the install prompt');
-                                floatingBtn.classList.remove('show');
-                            } else {
-                                console.log('User dismissed the install prompt');
+                                floatingBtn.style.display = 'none'; // إخفاء الزر فوراً بعد الموافقة
                             }
                             deferredPrompt = null;
                         } else {
-                            // إذا فتح العميل الموقع من داخل متصفح خارجي مدمج (كواتساب أو فيسبوك) يمنع التثبيت المباشر
-                            showCustomAlert(
-                                "⚠️", 
-                                "تنبيه التثبيت", 
-                                "يبدو أنك تفتح الرابط من داخل تطبيق خارجي (مثل واتساب أو فيسبوك).<br><br><b>لكي تتمكن من تثبيت التطبيق بضغطة واحدة وبشكل رسمي:</b><br>يرجى نسخ الرابط وفتحه مباشرة في متصفح <b>Google Chrome</b>."
-                            );
+                            // في حالة عدم توفر التثبيت المباشر الفوري (مثل الفتح من واتساب الداخلي)
+                            // لا يظهر أي ألارم مزعج لضمان نظافة السلوك، ويتم إخفاء الزر أو عدم الاستجابة بشكل صامت.
+                            console.log('Direct install is currently not available in this browser context.');
                         }
                     });
                 }
+            }
+        });
+
+        // 3. إخفاء الزر فوراً عند اكتمال عملية التثبيت بنجاح (للأندرويد والكروم)
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('App was successfully installed!');
+            if (floatingBtn) {
+                floatingBtn.classList.remove('show');
+                floatingBtn.style.display = 'none';
             }
         });
 
