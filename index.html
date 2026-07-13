@@ -29,6 +29,7 @@
             --card-shadow: 0 6px 20px rgba(0,0,0,0.04);
             --dark-orange: #d45d00; 
             --btn-shadow: 0 4px 12px rgba(212, 93, 0, 0.2);
+            --install-btn-shadow: 0 8px 24px rgba(212, 93, 0, 0.4);
         }
 
         * { 
@@ -90,9 +91,8 @@
         .header-logo { width: 100%; height: 100%; border-radius: 50%; object-fit: contain; }
         .header-title-text { font-size: 0.85rem; font-weight: 800; color: var(--desc-text); margin-top: 6px; }
         
-        /* أزرار الهيدر الجانبية المتناسقة */
+        /* زر السلة في اليسار */
         .header-left-actions { position: absolute; left: 15px; top: 22px; display: flex; align-items: center; }
-        .header-right-actions { position: absolute; right: 15px; top: 22px; display: flex; align-items: center; }
 
         .cart-trigger { background: #ffffff; color: var(--main-text); width: 45px; height: 45px; border-radius: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.4rem; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative; }
         .cart-trigger.shake { animation: cartShake 0.5s ease-in-out; }
@@ -100,9 +100,31 @@
         .badge { position: absolute; top: -5px; right: -5px; background: var(--dark-orange); color: #ffffff; font-size: 10px; font-weight: 800; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; transform: scale(0); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .badge.show { transform: scale(1); }
 
-        /* زرار تثبيت التطبيق الأنيق والمميز */
-        .btn-header-install { background: var(--dark-orange); color: #ffffff; border: none; padding: 10px 16px; border-radius: 12px; font-size: 0.8rem; font-weight: 800; cursor: pointer; box-shadow: var(--btn-shadow); display: flex; align-items: center; gap: 5px; }
-        .btn-header-install:active { transform: scale(0.95); }
+        /* 🔥 زرار "تثبيت التطبيق" العائم السحري 🔥 */
+        .floating-install-btn {
+            position: fixed;
+            bottom: 25px;
+            left: 20px;
+            z-index: 1500;
+            background: linear-gradient(135deg, #ff841a 0%, var(--dark-orange) 100%);
+            color: #ffffff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: var(--install-btn-shadow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: bounceBtn 2s infinite ease-in-out;
+        }
+        .floating-install-btn:active { transform: scale(0.95); }
+        @keyframes bounceBtn {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
 
         .category-nav { display: flex; overflow-x: auto; white-space: nowrap; padding: 12px 15px; gap: 20px; scrollbar-width: none; background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 0.5px solid rgba(0,0,0,0.05); border-bottom: 0.5px solid rgba(0,0,0,0.05); }
         .category-nav::-webkit-scrollbar { display: none; }
@@ -143,7 +165,7 @@
 
         /* السلة والـ Modals */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: none; justify-content: center; align-items: flex-end; backdrop-filter: blur(4px); }
-        .modal-content { background: var(--white); width: 100%; max-width: 480px; padding: 166px 20px; padding: 16px 20px; border-radius: 22px 22px 0 0; max-height: 82vh; overflow-y: auto; color: var(--main-text); box-shadow: 0 -5px 25px rgba(0,0,0,0.1); }
+        .modal-content { background: var(--white); width: 100%; max-width: 480px; padding: 16px 20px; border-radius: 22px 22px 0 0; max-height: 82vh; overflow-y: auto; color: var(--main-text); box-shadow: 0 -5px 25px rgba(0,0,0,0.1); }
         
         .modal-center { align-items: center; } 
         .modal-content-center { border-radius: 22px; width: 90%; max-width: 380px; text-align: center; margin: auto; }
@@ -164,7 +186,7 @@
         .type-btn.active { background: var(--dark-orange); color: #ffffff; border-color: var(--dark-orange); box-shadow: var(--btn-shadow); }
         .submit-btn { background: var(--dark-orange); color: #ffffff; border: none; padding: 12px; border-radius: 12px; width: 100%; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: var(--btn-shadow); }
 
-        /* خطوات التثبيت الاحتياطية */
+        /* خطوات التثبيت الإرشادية */
         .instruction-step { display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.02); padding: 12px; border-radius: 12px; margin-top: 10px; text-align: right; }
         .instruction-number { background: var(--dark-orange); color: #ffffff; font-weight: 800; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; }
         .instruction-text { font-size: 0.85rem; font-weight: 700; color: var(--main-text); flex: 1; }
@@ -182,12 +204,13 @@
         </div>
     </div>
 
+    <button class="floating-install-btn" onclick="triggerPwaInstall()">
+        <span>📥</span>
+        <span>تثبيت التطبيق</span>
+    </button>
+
     <div class="sticky-wrapper">
         <header>
-            <div class="header-right-actions">
-                <button class="btn-header-install" onclick="triggerPwaInstall()">📥 تثبيت التطبيق</button>
-            </div>
-
             <div class="header-top">
                 <div class="header-logo-container">
                     <img src="./images/logooo.png" class="header-logo" alt="لوجو أبو فاروق">
@@ -283,32 +306,27 @@
         let currentTotal = 0; 
         let selectedOrderType = 'دليفري'; 
 
-        // ----------------------------------------------------
-        // نظام تسجيل السيرفس وركر من غير ما نمسحه عشان التثبيت يشتغل فوري
-        // ----------------------------------------------------
+        // تسجيل السيرفس وركر من غير ما نمسحه عشان التثبيت الفوري يشتغل صح
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                .then(reg => console.log('Service Worker Registered Successfully!'))
+                .then(reg => console.log('Service Worker Registered!'))
                 .catch(err => console.log('Service Worker Registration Failed:', err));
             });
         }
 
         // ----------------------------------------------------
-        // نظام التثبيت الفوري عند الضغط
+        // نظام التثبيت الفوري المباشر بضغطة واحدة
         // ----------------------------------------------------
         let deferredPrompt = null;
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
         window.addEventListener('beforeinstallprompt', (e) => {
-            // منع المتصفح من إظهار الشريط التلقائي الافتراضي
             e.preventDefault();
-            // حفظ الحدث عشان نشغله فوراً لما يضغط على "تثبيت التطبيق"
             deferredPrompt = e;
         });
 
         function triggerPwaInstall() {
-            // إذا كان الحدث مسجل وجاهز (أندرويد / كروم)
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
@@ -318,7 +336,7 @@
                     deferredPrompt = null;
                 });
             } else {
-                // لو المتصفح معصلج أو الجهاز آيفون، يفتح المودال الإرشادي الذكي تلقائياً
+                // في حالة الآيفون أو متصفح لا يدعم التثبيت المباشر بالبرمجة
                 toggleInstallGuide(true);
             }
         }
@@ -390,6 +408,7 @@
             });
         }
 
+        // تحديث بار التحميل
         function updateProgressUI(percentage) {
             const counterEl = document.getElementById('loadCounter');
             const progressEl = document.getElementById('loadProgress');
