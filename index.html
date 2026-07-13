@@ -4,12 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بيتزا وفطائر أبو فاروق | المنيو الرسمي</title>
-
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="أبو فاروق">
-    <link class="brand-logo-icon" rel="apple-touch-icon" href="images/logooo.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,7 +23,6 @@
             --card-shadow: 0 6px 20px rgba(0,0,0,0.04);
             --dark-orange: #d45d00; 
             --btn-shadow: 0 4px 12px rgba(212, 93, 0, 0.2);
-            --install-btn-shadow: 0 8px 24px rgba(212, 93, 0, 0.4);
         }
 
         * { 
@@ -99,33 +92,6 @@
         @keyframes cartShake { 0%, 100% { transform: scale(1) rotate(0deg); } 20%, 60% { transform: scale(1.1) rotate(-10deg); } 40%, 80% { transform: scale(1.1) rotate(10deg); } }
         .badge { position: absolute; top: -5px; right: -5px; background: var(--dark-orange); color: #ffffff; font-size: 10px; font-weight: 800; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; transform: scale(0); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .badge.show { transform: scale(1); }
-
-        /* 🔥 زرار التثبيت العائم الذكي 🔥 */
-        /* يبدأ مخفياً تماماً ويظهر فقط عندما يكون التثبيت الفوري جاهزاً */
-        .floating-install-btn {
-            position: fixed;
-            bottom: 25px;
-            left: 20px;
-            z-index: 1500;
-            background: linear-gradient(135deg, #ff841a 0%, var(--dark-orange) 100%);
-            color: #ffffff;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: var(--install-btn-shadow);
-            display: none; /* مخفي افتراضياً */
-            align-items: center;
-            gap: 8px;
-            animation: bounceBtn 2s infinite ease-in-out;
-        }
-        .floating-install-btn:active { transform: scale(0.95); }
-        @keyframes bounceBtn {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
-        }
 
         .category-nav { display: flex; overflow-x: auto; white-space: nowrap; padding: 12px 15px; gap: 20px; scrollbar-width: none; background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 0.5px solid rgba(0,0,0,0.05); border-bottom: 0.5px solid rgba(0,0,0,0.05); }
         .category-nav::-webkit-scrollbar { display: none; }
@@ -197,11 +163,6 @@
         </div>
     </div>
 
-    <button class="floating-install-btn" id="pwaInstallBtn" onclick="triggerPwaInstall()">
-        <span>📥</span>
-        <span>تثبيت التطبيق</span>
-    </button>
-
     <div class="sticky-wrapper">
         <header>
             <div class="header-top">
@@ -266,53 +227,6 @@
         let menuData = [], cart = [];
         let currentTotal = 0; 
         let selectedOrderType = 'دليفري'; 
-
-        // تسجيل الـ Service Worker لضمان عمل كاش للملفات ليكون التطبيق قابلاً للتثبيت
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                .then(reg => console.log('Service Worker Registered!'))
-                .catch(err => console.log('Service Worker Registration Failed:', err));
-            });
-        }
-
-        // ----------------------------------------------------
-        // نظام التثبيت المباشر الفوري والموثوق بنسبة 100%
-        // ----------------------------------------------------
-        let deferredPrompt = null;
-        const installBtn = document.getElementById('pwaInstallBtn');
-
-        // يستمع لحدث إتاحة التثبيت الفوري من المتصفح
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            // إظهار الزرار فوراً كونه جاهزاً للتثبيت المباشر بضغطة واحدة!
-            if(installBtn) {
-                installBtn.style.display = 'flex';
-            }
-        });
-
-        function triggerPwaInstall() {
-            if (deferredPrompt) {
-                // تفعيل شاشة التثبيت الرسمية للمتصفح مباشرة
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the install prompt');
-                        // إخفاء الزرار بمجرد قبول التثبيت بنجاح
-                        if(installBtn) installBtn.style.display = 'none';
-                    }
-                    deferredPrompt = null;
-                });
-            }
-        }
-
-        // إخفاء الزرار تلقائياً لو تم تثبيت التطبيق بالفعل
-        window.addEventListener('appinstalled', () => {
-            if(installBtn) installBtn.style.display = 'none';
-            deferredPrompt = null;
-        });
-        // ----------------------------------------------------
 
         function setOrderType(type) {
             selectedOrderType = type;
