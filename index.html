@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بيتزا وفطائر أبو فاروق | المنيو الرسمي</title>
     
+    <!-- ربط ملف المانيفست -->
     <link rel="manifest" href="manifest.json">
     
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -172,6 +173,7 @@
 </head>
 <body>
 
+    <!-- شاشة التحميل -->
     <div id="splash-screen">
         <div class="loader-content">
             <img src="./images/logooo.png" class="loader-logo-big" alt="بيتزا وفطائر أبو فاروق">
@@ -239,6 +241,7 @@
         </div>
     </div>
 
+    <!-- بار تثبيت التطبيق السفلي (بدون أي نوافذ بديلة نهائياً) -->
     <div id="pwa-install-banner">
         <div class="banner-right">
             <img src="./images/logooo.png" class="banner-logo" alt="لوجو">
@@ -261,7 +264,7 @@
         let selectedOrderType = 'دليفري'; 
 
         // ----------------------------------------------------
-        // نظام التثبيت الصارم (إما استدعاء نافذة المتصفح الرسمية أو لا شيء)
+        // نظام التثبيت الصارم جداً (بدون أي جمل alert نهائياً)
         // ----------------------------------------------------
         let deferredPrompt = null;
         const installBanner = document.getElementById('pwa-install-banner');
@@ -269,8 +272,11 @@
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('SW Registered'))
+                navigator.serviceWorker.register('./sw.js?v=2') // إجبار المتصفح على تحميل الـ sw الجديد
+                    .then(reg => {
+                        console.log('SW Registered');
+                        reg.update(); // تحديث فوري
+                    })
                     .catch(err => console.log('SW Failed', err));
             });
         }
@@ -283,7 +289,6 @@
 
         if (installBtn) {
             installBtn.addEventListener('click', () => {
-                // استدعاء مباشر وحصري لنافذة المتصفح الأصلية
                 if (deferredPrompt) {
                     deferredPrompt.prompt();
                     deferredPrompt.userChoice.then((choiceResult) => {
