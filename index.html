@@ -5,9 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بيتزا وفطائر أبو فاروق | المنيو الرسمي</title>
     
-    <!-- ربط ملف المانيفست -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister().then(function(boolean) {
+                        if(boolean) {
+                            console.log('تم حذف الـ Service Worker القديم بنجاح');
+                        }
+                    });
+                }
+            });
+        }
+        if ('caches' in window) {
+            caches.keys().then(function(names) {
+                for (let name of names) {
+                    caches.delete(name);
+                }
+            });
+        }
+    </script>
+
     <link rel="manifest" href="manifest.json">
-    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="أبو فاروق">
@@ -173,7 +192,6 @@
 </head>
 <body>
 
-    <!-- شاشة التحميل -->
     <div id="splash-screen">
         <div class="loader-content">
             <img src="./images/logooo.png" class="loader-logo-big" alt="بيتزا وفطائر أبو فاروق">
@@ -241,7 +259,6 @@
         </div>
     </div>
 
-    <!-- بار تثبيت التطبيق السفلي (بدون أي نوافذ بديلة نهائياً) -->
     <div id="pwa-install-banner">
         <div class="banner-right">
             <img src="./images/logooo.png" class="banner-logo" alt="لوجو">
@@ -264,22 +281,11 @@
         let selectedOrderType = 'دليفري'; 
 
         // ----------------------------------------------------
-        // نظام التثبيت الصارم جداً (بدون أي جمل alert نهائياً)
+        // نظام التثبيت الصارم (مستحيل يطلع منه أي تنبيه أو رسائل)
         // ----------------------------------------------------
         let deferredPrompt = null;
         const installBanner = document.getElementById('pwa-install-banner');
         const installBtn = document.getElementById('pwaBtnInstall');
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js?v=2') // إجبار المتصفح على تحميل الـ sw الجديد
-                    .then(reg => {
-                        console.log('SW Registered');
-                        reg.update(); // تحديث فوري
-                    })
-                    .catch(err => console.log('SW Failed', err));
-            });
-        }
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
