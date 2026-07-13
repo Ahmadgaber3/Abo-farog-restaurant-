@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بيتزا وفطائر أبو فاروق | المنيو الرسمي</title>
     
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#d45d00">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -124,7 +127,7 @@
         .add-btn.success-state { background-color: var(--success) !important; box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3) !important; font-size: 0.68rem; pointer-events: none; }
 
         .fly-item { position: fixed; z-index: 9999; pointer-events: none; width: 30px; height: 30px; background: var(--dark-orange); color: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
-        .restaurant-footer { padding: 30px 20px; text-align: center; background: var(--white); border-top: 1px solid rgba(0,0,0,0.05); margin-top: 30px; padding-bottom: 40px; }
+        .restaurant-footer { padding: 30px 20px; text-align: center; background: var(--white); border-top: 1px solid rgba(0,0,0,0.05); margin-top: 30px; padding-bottom: 70px; /* زيادة الهامش عشان الزرار العائم ما يغطيش على الفوتر */ }
         .footer-phones a { display: inline-block; color: var(--dark-orange); text-decoration: none; font-weight: 800; font-size: 1.2rem; margin: 5px 10px; }
         .footer-rights { font-size: 0.8rem; color: var(--main-text); font-weight: 600; margin-bottom: 5px; }
         .dev-credit { font-size: 0.85rem; color: var(--desc-text); font-weight: 700; }
@@ -149,6 +152,24 @@
         .type-btn { flex: 1; padding: 8px; border-radius: 10px; border: 1.5px solid rgba(0,0,0,0.06); background: var(--bg); color: var(--main-text); font-weight: 800; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
         .type-btn.active { background: var(--dark-orange); color: #ffffff; border-color: var(--dark-orange); box-shadow: var(--btn-shadow); }
         .submit-btn { background: var(--dark-orange); color: #ffffff; border: none; padding: 12px; border-radius: 12px; width: 100%; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: var(--btn-shadow); }
+
+        /* شريط التثبيت العائم الأسفل */
+        .install-banner {
+            position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%) translateY(150px);
+            width: 90%; max-width: 400px; background: rgba(8, 8, 8, 0.95);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px;
+            padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); z-index: 1500;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .install-banner.show { transform: translateX(-50%) translateY(0); }
+        .install-info { display: flex; align-items: center; gap: 10px; text-align: right; }
+        .install-icon { width: 40px; height: 40px; border-radius: 10px; object-fit: contain; background: #fff; padding: 3px; }
+        .install-text h4 { font-size: 0.85rem; font-weight: 800; color: #ffffff; }
+        .install-text p { font-size: 0.7rem; color: #ccc; font-weight: 600; }
+        .install-action-btn { background: var(--dark-orange); color: #ffffff; border: none; padding: 6px 14px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer; white-space: nowrap; box-shadow: var(--btn-shadow); }
+        .install-close { color: #aaa; font-size: 1.1rem; cursor: pointer; padding: 0 5px; margin-right: 5px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -183,6 +204,18 @@
     </div>
 
     <main id="menuList" class="menu-list"></main>
+
+    <div class="install-banner" id="installBanner">
+        <div class="install-info">
+            <span class="install-close" onclick="closeInstallBanner()">×</span>
+            <img src="./images/logooo.png" class="install-icon" alt="لوجو">
+            <div class="install-text">
+                <h4>تطبيق أبو فاروق</h4>
+                <p>ثبته الآن لطلب أسرع بدون تصفح!</p>
+            </div>
+        </div>
+        <button class="install-action-btn" id="installBtn">تثبيت</button>
+    </div>
 
     <footer class="restaurant-footer">
         <div class="footer-phones">
@@ -227,6 +260,46 @@
         let menuData = [], cart = [];
         let currentTotal = 0; 
         let selectedOrderType = 'دليفري'; 
+        let deferredPrompt;
+
+        // كود تشغيل وتفعيل التثبيت الذكي والزرار العائم
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // إظهار البانر العائم بسلاسة بعد تحميل الموقع بـ 2 ثانية
+            setTimeout(() => {
+                const banner = document.getElementById('installBanner');
+                if (banner) banner.classList.add('show');
+            }, 2000);
+        });
+
+        const installBtn = document.getElementById('installBtn');
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        closeInstallBanner();
+                    }
+                    deferredPrompt = null;
+                }
+            });
+        }
+
+        function closeInstallBanner() {
+            const banner = document.getElementById('installBanner');
+            if (banner) banner.classList.remove('show');
+        }
+
+        // تسجيل الـ Service Worker عشان التثبيت يشتغل صح
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker Registered'))
+                    .catch(err => console.log('SW registration failed: ', err));
+            });
+        }
 
         function setOrderType(type) {
             selectedOrderType = type;
