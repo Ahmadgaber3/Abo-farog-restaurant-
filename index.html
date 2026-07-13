@@ -7,6 +7,7 @@
     
     <meta name="theme-color" content="#d45d00">
     
+    <!-- ملف الـ manifest لتعريف التطبيق -->
     <link rel="manifest" href="manifest.json">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,6 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
+        /* الألوان الافتراضية (الوضع المضيء) */
         :root {
             --bg: #f4f5f7; 
             --card-gradient: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
@@ -27,6 +29,25 @@
             --card-shadow: 0 6px 20px rgba(0,0,0,0.04);
             --dark-orange: #d45d00; 
             --btn-shadow: 0 4px 12px rgba(212, 93, 0, 0.2);
+            --border-color: rgba(0,0,0,0.08);
+            --card-border: rgba(0,0,0,0.01);
+            --input-bg: #f4f5f7;
+        }
+
+        /* ألوان الوضع الليلي (Dark Mode) */
+        [data-theme="dark"] {
+            --bg: #121212; 
+            --card-gradient: linear-gradient(135deg, #1e1e1e 0%, #181818 100%);
+            --main-text: #ffffff;
+            --desc-text: #b0b0b0;
+            --brand-black: #ffffff; 
+            --white: #1e1e1e; 
+            --glass: rgba(30, 30, 30, 0.85);
+            --header-bg: #1a1a1a;
+            --card-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            --border-color: rgba(255,255,255,0.1);
+            --card-border: rgba(255,255,255,0.03);
+            --input-bg: #2a2a2a;
         }
 
         * { 
@@ -88,15 +109,31 @@
         .header-logo { width: 100%; height: 100%; border-radius: 50%; object-fit: contain; }
         .header-title-text { font-size: 0.85rem; font-weight: 800; color: var(--desc-text); margin-top: 6px; }
         
-        /* زر السلة */
+        /* أزرار الهيدر (السلة في اليسار والإضاءة في اليمين) */
         .header-left-actions { position: absolute; left: 15px; top: 22px; display: flex; align-items: center; }
-        .cart-trigger { background: #ffffff; color: var(--main-text); width: 45px; height: 45px; border-radius: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.4rem; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative; }
+        .header-right-actions { position: absolute; right: 15px; top: 22px; display: flex; align-items: center; }
+
+        .cart-trigger, .theme-trigger { 
+            background: var(--white); 
+            color: var(--main-text); 
+            width: 45px; 
+            height: 45px; 
+            border-radius: 14px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            font-size: 1.3rem; 
+            border: 1px solid var(--border-color); 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+            position: relative; 
+        }
         .cart-trigger.shake { animation: cartShake 0.5s ease-in-out; }
         @keyframes cartShake { 0%, 100% { transform: scale(1) rotate(0deg); } 20%, 60% { transform: scale(1.1) rotate(-10deg); } 40%, 80% { transform: scale(1.1) rotate(10deg); } }
-        .badge { position: absolute; top: -5px; right: -5px; background: var(--dark-orange); color: #ffffff; font-size: 10px; font-weight: 800; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; transform: scale(0); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .badge { position: absolute; top: -5px; right: -5px; background: var(--dark-orange); color: #ffffff; font-size: 10px; font-weight: 800; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--white); transform: scale(0); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .badge.show { transform: scale(1); }
 
-        .category-nav { display: flex; overflow-x: auto; white-space: nowrap; padding: 12px 15px; gap: 20px; scrollbar-width: none; background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 0.5px solid rgba(0,0,0,0.05); border-bottom: 0.5px solid rgba(0,0,0,0.05); }
+        .category-nav { display: flex; overflow-x: auto; white-space: nowrap; padding: 12px 15px; gap: 20px; scrollbar-width: none; background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 0.5px solid var(--border-color); border-bottom: 0.5px solid var(--border-color); }
         .category-nav::-webkit-scrollbar { display: none; }
         .cat-item { display: flex; flex-direction: column; align-items: center; min-width: 80px; cursor: pointer; }
         .cat-img-box { width: 68px; height: 68px; border-radius: 50%; background: #e5e5ea; overflow: hidden; border: 2.5px solid transparent; transition: all 0.25s ease; }
@@ -107,12 +144,12 @@
 
         /* الكروت والمنيو */
         .menu-list { padding: 10px 12px; max-width: 650px; margin: auto; min-height: 400px; }
-        .food-card { background: var(--card-gradient); border-radius: 14px; margin-bottom: 8px; display: flex; padding: 8px 10px; gap: 12px; box-shadow: var(--card-shadow); border: 1px solid rgba(0,0,0,0.01); align-items: flex-start; }
+        .food-card { background: var(--card-gradient); border-radius: 14px; margin-bottom: 8px; display: flex; padding: 8px 10px; gap: 12px; box-shadow: var(--card-shadow); border: 1px solid var(--card-border); align-items: flex-start; }
         .card-right-block { display: flex; flex-direction: column; align-items: center; width: 95px; flex-shrink: 0; gap: 5px; }
         .food-card .item-img-box { width: 95px; height: 80px; border-radius: 10px; overflow: hidden; background: #222; }
         .food-card .item-img-box img { width: 100%; height: 100%; object-fit: cover; }
         .size-selector { display: flex; gap: 6px; width: fit-content; margin-top: 4px; }
-        .size-option { font-size: 0.78rem; font-weight: 800; padding: 4px 12px; border-radius: 6px; background: rgba(0,0,0,0.04); cursor: pointer; color: var(--main-text); white-space: nowrap; }
+        .size-option { font-size: 0.78rem; font-weight: 800; padding: 4px 12px; border-radius: 6px; background: rgba(120,120,120,0.15); cursor: pointer; color: var(--main-text); white-space: nowrap; }
         .size-option.selected { background: var(--dark-orange); color: #ffffff; }
         .price-row { display: flex; justify-content: center; width: 100%; }
         .food-price { font-weight: 800; color: var(--dark-orange); font-size: 0.9rem; display: inline-flex; align-items: center; gap: 1px; }
@@ -128,34 +165,35 @@
 
         .fly-item { position: fixed; z-index: 9999; pointer-events: none; width: 30px; height: 30px; background: var(--dark-orange); color: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
         
-        .restaurant-footer { padding: 30px 20px; text-align: center; background: var(--white); border-top: 1px solid rgba(0,0,0,0.05); margin-top: 30px; padding-bottom: 40px; }
+        .restaurant-footer { padding: 30px 20px; text-align: center; background: var(--white); border-top: 1px solid var(--border-color); margin-top: 30px; padding-bottom: 40px; }
         .footer-phones a { display: inline-block; color: var(--dark-orange); text-decoration: none; font-weight: 800; font-size: 1.2rem; margin: 5px 10px; }
         .footer-rights { font-size: 0.8rem; color: var(--main-text); font-weight: 600; margin-bottom: 5px; }
         .dev-credit { font-size: 0.85rem; color: var(--desc-text); font-weight: 700; }
         .dev-credit a { color: var(--dark-orange); text-decoration: none; display: block; margin-top: 3px; }
 
         /* السلة والـ Modals */
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: none; justify-content: center; align-items: flex-end; backdrop-filter: blur(4px); }
-        .modal-content { background: var(--white); width: 100%; max-width: 480px; padding: 16px 20px; border-radius: 22px 22px 0 0; max-height: 82vh; overflow-y: auto; color: var(--main-text); box-shadow: 0 -5px 25px rgba(0,0,0,0.1); }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; justify-content: center; align-items: flex-end; backdrop-filter: blur(4px); }
+        .modal-content { background: var(--white); width: 100%; max-width: 480px; padding: 16px 20px; border-radius: 22px 22px 0 0; max-height: 82vh; overflow-y: auto; color: var(--main-text); box-shadow: 0 -5px 25px rgba(0,0,0,0.2); }
 
-        .cart-item-card { display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: rgba(0,0,0,0.02); border-radius: 12px; margin-bottom: 8px; }
+        .cart-item-card { display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: rgba(120,120,120,0.08); border-radius: 12px; margin-bottom: 8px; }
         .cart-item-img { width: 42px; height: 42px; border-radius: 8px; object-fit: cover; }
         .cart-item-info { flex: 1; }
         .cart-item-name { font-weight: 700; font-size: 0.88rem; } 
         .cart-item-size { font-size: 0.7rem; color: var(--desc-text); display: block; }
         .cart-item-price { color: var(--dark-orange); font-weight: 800; font-size: 0.8rem; display: block; }
         .remove-btn { color: #ff4d4d; font-weight: 800; font-size: 0.75rem; cursor: pointer; padding: 4px; }
-        .user-fields input { background: var(--bg); border: 1px solid transparent; padding: 10px 12px; border-radius: 10px; width: 100%; margin-bottom: 8px; color: var(--main-text); text-align: right; font-size: 0.88rem; }
+        
+        .user-fields input { background: var(--input-bg); border: 1px solid transparent; padding: 10px 12px; border-radius: 10px; width: 100%; margin-bottom: 8px; color: var(--main-text); text-align: right; font-size: 0.88rem; }
+        .user-fields input::placeholder { color: var(--desc-text); opacity: 0.8; }
         .user-fields input:focus { border-color: var(--dark-orange); outline: none; }
+        
         .order-type-container { margin-bottom: 12px; text-align: right; }
         .order-type-title { font-size: 0.78rem; font-weight: 800; color: var(--desc-text); display: block; margin-bottom: 6px; }
         .order-type-toggle { display: flex; gap: 10px; width: 100%; }
-        .type-btn { flex: 1; padding: 8px; border-radius: 10px; border: 1.5px solid rgba(0,0,0,0.06); background: var(--bg); color: var(--main-text); font-weight: 800; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
+        .type-btn { flex: 1; padding: 8px; border-radius: 10px; border: 1.5px solid var(--border-color); background: var(--input-bg); color: var(--main-text); font-weight: 800; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
         .type-btn.active { background: var(--dark-orange); color: #ffffff; border-color: var(--dark-orange); box-shadow: var(--btn-shadow); }
         .submit-btn { background: var(--dark-orange); color: #ffffff; border: none; padding: 12px; border-radius: 12px; width: 100%; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: var(--btn-shadow); }
 
-        /* ================= عناصر التثبيت البسيطة ================= */
-        
         /* زر التثبيت العائم النظيف */
         .floating-install-btn {
             position: fixed; bottom: 20px; left: 20px; background: linear-gradient(135deg, #d45d00 0%, #ff841a 100%);
@@ -165,10 +203,6 @@
         }
         @keyframes bounceBtn { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 
-        /* ========================================================
-           القاعدة الذهبية الفولاذية: إذا تم فتح الموقع كـ "تطبيق مثبت"
-           تختفي كلمة تثبيت تماماً من الـ CSS والـ HTML تلقائياً!
-           ======================================================== */
         @media (display-mode: standalone) {
             .floating-install-btn {
                 display: none !important;
@@ -178,6 +212,7 @@
 </head>
 <body>
 
+    <!-- شاشة التحميل -->
     <div id="splash-screen">
         <div class="loader-content">
             <img src="./images/logooo.png" class="loader-logo-big" alt="بيتزا وفطائر أبو فاروق">
@@ -190,6 +225,13 @@
 
     <div class="sticky-wrapper">
         <header>
+            <!-- زر الإضاءة الليلية (في اليمين) -->
+            <div class="header-right-actions">
+                <button class="theme-trigger" onclick="toggleTheme()" id="themeBtn" title="تغيير المظهر">
+                    <span id="themeIcon">🌙</span>
+                </button>
+            </div>
+
             <div class="header-top">
                 <div class="header-logo-container">
                     <img src="./images/logooo.png" class="header-logo" alt="لوجو أبو فاروق">
@@ -197,6 +239,7 @@
             </div>
             <span class="header-title-text">بيتزا وفطائر أبو فاروق</span>
 
+            <!-- زر السلة (في اليسار) -->
             <div class="header-left-actions">
                 <button class="cart-trigger" onclick="toggleCart(true)" id="cartBtn">
                     <span class="badge" id="cartBadge">0</span>
@@ -209,6 +252,7 @@
 
     <main id="menuList" class="menu-list"></main>
 
+    <!-- زر التثبيت العائم البسيط -->
     <button class="floating-install-btn" id="floatInstallBtn" onclick="triggerPWAInstall()">
         <span>📥</span> تثبيت التطبيق
     </button>
@@ -226,6 +270,7 @@
         </div>
     </footer>
 
+    <!-- مودال السلة -->
     <div class="modal" id="cartModal" onclick="if(event.target==this) toggleCart(false)">
         <div class="modal-content">
             <h3 style="margin-bottom: 12px; font-size: 1.1rem; font-weight: 800;">طلباتك</h3>
@@ -258,9 +303,14 @@
         let selectedOrderType = 'دليفري'; 
         let deferredPrompt = null;
 
+        // تطبيق الثيم المخزن فوراً عند الفتح لمنع الوميض الأبيض المفاجئ
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
         window.addEventListener('DOMContentLoaded', () => {
             loadMenu();
             initInstallCheck();
+            updateThemeUI(savedTheme);
         });
 
         // تسجيل الـ Service Worker
@@ -270,23 +320,38 @@
             });
         }
 
-        // ================= برمجة التثبيت السلسة للغاية =================
+        // ================= برمجة الإضاءة الليلية (Dark Mode) =================
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeUI(newTheme);
+        }
+
+        function updateThemeUI(theme) {
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.innerText = theme === 'dark' ? '☀️' : '🌙';
+            }
+        }
+
+        // ================= برمجة التثبيت السلسة =================
 
         function isAppInstalled() {
-            // كشف فوري إذا كان العميل يتصفح من داخل التطبيق المثبت بالفعل
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
             const isIOSStandalone = window.navigator.standalone === true;
             return (isStandalone || isIOSStandalone);
         }
 
         function initInstallCheck() {
-            // إذا كان مثبت بالفعل ومفتوح كتطبيق، لا تفعل شيء ولا تظهر أي زر نهائياً
             if (isAppInstalled()) {
                 document.getElementById('floatInstallBtn').style.display = 'none';
                 return; 
             }
 
-            // التقاط حدث التثبيت عند توفره (مثل جوجل كروم في أندرويد) لإظهار الزر برفق
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
                 deferredPrompt = e;
@@ -306,7 +371,6 @@
             }
         }
 
-        // إخفاء الزر فوراً عند إتمام عملية التثبيت بنجاح
         window.addEventListener('appinstalled', () => {
             document.getElementById('floatInstallBtn').style.display = 'none';
         });
@@ -425,12 +489,22 @@
             const filtered = menuData.filter(i => i.category === cat);
             document.getElementById('menuList').innerHTML = filtered.map(item => {
                 let sizeButtons = ""; let firstSelectedSize = ""; let firstSelectedPrice = "";
-                for (const [sizeName, priceVal] of Object.entries(item.prices)) {
+                for (let [sizeName, priceVal] of Object.entries(item.prices)) {
                     if(priceVal && typeof priceVal === 'string' && priceVal.trim() !== "" && priceVal !== "0") {
                         const cleanPrice = cleanPriceValue(priceVal);
                         if(cleanPrice > 0) {
+                            
+                            // ---- تبديل المسميات الذكي لقسم المكرونة بالكامل ----
+                            let displayName = sizeName;
+                            // تم استخدام الاسم "المكرونة" المطابق لملف الشيت تماماً
+                            if (item.category === "المكرونة") { 
+                                if (sizeName === "وسط") displayName = "ريد صوص";
+                                if (sizeName === "كبير") displayName = "وايت صوص";
+                            }
+                            // ---------------------------------------------------
+
                             if(!firstSelectedSize) { firstSelectedSize = sizeName; firstSelectedPrice = cleanPrice; }
-                            sizeButtons += `<span class="size-option ${firstSelectedSize === sizeName ? 'selected' : ''}" onclick="selectItemSize(this, ${item.id}, '${sizeName}', ${cleanPrice})">${sizeName}</span>`;
+                            sizeButtons += `<span class="size-option ${firstSelectedSize === sizeName ? 'selected' : ''}" onclick="selectItemSize(this, ${item.id}, '${sizeName}', ${cleanPrice})">${displayName}</span>`;
                         }
                     }
                 }
@@ -476,7 +550,17 @@
             currentTotal = 0; const container = document.getElementById('cartItemsList');
             container.innerHTML = cart.map((item, idx) => {
                 currentTotal += parseInt(item.price, 10) || 0;
-                return `<div class="cart-item-card"><img src="${item.img}" class="cart-item-img" onerror="this.onerror=null; this.src='${IMAGES_PATH}default.jpg';"><div class="cart-item-info"><span class="cart-item-name">${item.name}</span><span class="cart-item-size">الحجم: ${item.size}</span><span class="cart-item-price">${item.price} جنيه</span></div><span class="remove-btn" onclick="removeFromCart(${idx})">حذف</span></div>`;
+                
+                // البحث عن الصنف لتحديد قسمه
+                const menuItem = menuData.find(i => i.name === item.name);
+                let displaySize = item.size;
+                
+                if (menuItem && menuItem.category === "المكرونة") {
+                    if (item.size === "وسط") displaySize = "ريد صوص";
+                    if (item.size === "كبير") displaySize = "وايت صوص";
+                }
+
+                return `<div class="cart-item-card"><img src="${item.img}" class="cart-item-img" onerror="this.onerror=null; this.src='${IMAGES_PATH}default.jpg';"><div class="cart-item-info"><span class="cart-item-name">${item.name}</span><span class="cart-item-size">النوع: ${displaySize}</span><span class="cart-item-price">${item.price} جنيه</span></div><span class="remove-btn" onclick="removeFromCart(${idx})">حذف</span></div>`;
             }).join('');
             document.getElementById('totalAmount').innerText = `${currentTotal} جنيه`;
         }
@@ -491,7 +575,20 @@
             let msg = `*طلب جديد - بيتزا وفطائر أبو فاروق*\n──────────────\n👤 *الاسم:* ${n}\n📱 *الموبايل:* ${p}\n🛵 *نوع الطلب:* ${selectedOrderType}\n`;
             if (selectedOrderType === "دليفري") msg += `📍 *العنوان:* ${a}\n`;
             msg += `──────────────\n📦 *الطلبات:*\n`;
-            const summary = {}; cart.forEach(item => { const key = `${item.name} (${item.size})`; summary[key] = (summary[key] || 0) + 1; });
+            
+            const summary = {}; 
+            cart.forEach(item => { 
+                const menuItem = menuData.find(i => i.name === item.name);
+                let orderSize = item.size;
+                
+                if (menuItem && menuItem.category === "المكرونة") {
+                    if (item.size === "وسط") orderSize = "ريد صوص";
+                    if (item.size === "كبير") orderSize = "وايت صوص";
+                }
+                const key = `${item.name} (${orderSize})`; 
+                summary[key] = (summary[key] || 0) + 1; 
+            });
+            
             for (const [itemKey, qty] of Object.entries(summary)) msg += `• ${itemKey} × ${qty}\n`;
             msg += `──────────────\n💰 *الإجمالي النهائي:* ${currentTotal} جنيه\n_شكراً لاختياركم أبو فاروق_ ✨`;
             window.open(`https://wa.me/201145496172?text=${encodeURIComponent(msg)}`, '_blank');
