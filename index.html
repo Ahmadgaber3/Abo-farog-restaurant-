@@ -10,7 +10,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="أبو فاروق">
-    <!-- تم تعديل اللوجو هنا إلى png -->
     <link class="brand-logo-icon" rel="apple-touch-icon" href="images/logooo.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -171,10 +170,11 @@
 
         .header-top { width: 100%; display: flex; align-items: center; justify-content: center; position: relative; }
         
+        /* تم تعديل الحاوية هنا (شيلنا الخلفية السوداء والحشو الداخلي) */
         .header-logo-container {
             width: 90px; height: 90px; 
-            border-radius: 50%; background: var(--brand-black);
-            padding: 8px; 
+            border-radius: 50%; background: transparent;
+            padding: 0; 
             box-shadow: 0 4px 15px rgba(212, 93, 0, 0.15); overflow: hidden;
             display: flex;
             align-items: center;
@@ -276,7 +276,6 @@
             width: fit-content;
             margin-top: 4px;
         }
-        /* تم تكبير الحجم والـ padding هنا بناءً على طلبك */
         .size-option { 
             font-size: 0.78rem; 
             font-weight: 800; 
@@ -480,7 +479,6 @@
     <!-- شاشة التحميل (Splash Screen) -->
     <div id="splash-screen">
         <div class="loader-content">
-            <!-- تم تعديل اللوجو هنا إلى png -->
             <img src="./images/logooo.png" class="loader-logo-big" alt="بيتزا وفطائر أبو فاروق">
             <h2 class="loader-text">مطعم أبو فاروق</h2>
             <p class="loader-slogan">طعم يأخذك في حتة ثانية 🍕🔥</p>
@@ -494,7 +492,6 @@
         <header>
             <div class="header-top">
                 <div class="header-logo-container">
-                    <!-- تم تعديل اللوجو هنا إلى png -->
                     <img src="./images/logooo.png" class="header-logo" alt="لوجو أبو فاروق">
                 </div>
                 <div class="cart-trigger-container">
@@ -552,7 +549,6 @@
 
     <script>
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTuGjN3rD1beT3S7bKReqf4y5SwTGyeqL9Bcdl8G39iuWibSVEM9LST_I080t9JWHbG-5rAumG0FXmq/pub?output=csv';
-        // تم ترك مسار الصور الديناميكي للأصناف كما هو للاعتماد على صيغة التصنيفات
         const IMAGES_PATH = "./images/"; 
         let menuData = [], cart = [];
         let currentTotal = 0; 
