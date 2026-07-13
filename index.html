@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بيتزا وفطائر أبو فاروق | المنيو الرسمي</title>
     
+    <!-- ربط الـ Manifest لتمكين التثبيت الفوري -->
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#d45d00">
     
+    <!-- إضافة ميتا تاج للـ iOS (الآيفون) لدعم التثبيت -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="أبو فاروق">
@@ -159,48 +161,56 @@
         .type-btn.active { background: var(--dark-orange); color: #ffffff; border-color: var(--dark-orange); box-shadow: var(--btn-shadow); }
         .submit-btn { background: var(--dark-orange); color: #ffffff; border: none; padding: 12px; border-radius: 12px; width: 100%; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: var(--btn-shadow); }
 
-        /* شريط التثبيت العائم الأسفل (تم تعديله ليظهر بشكل دائم ولا يختفي تلقائياً) */
-        .install-banner {
-            position: fixed; 
-            bottom: 0; 
-            left: 50%; 
-            transform: translateX(-50%) translateY(0); /* جعل الشريط ظاهراً دائماً منذ البداية */
-            width: 100%; 
-            max-width: 650px; 
-            background: #2b2b2b; 
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px 16px; 
-            display: flex; 
-            justify-content: space-between; 
+        /* تصميم زر التثبيت العائم المحمي والمؤمن تماماً */
+        .floating-install-btn {
+            position: fixed;
+            bottom: 25px;
+            left: 20px;
+            background: linear-gradient(135deg, #ff841a 0%, #d45d00 100%);
+            color: #ffffff;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            display: flex;
             align-items: center;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3); 
-            z-index: 1500;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            gap: 8px;
+            box-shadow: 0 8px 25px rgba(212, 93, 0, 0.4);
+            z-index: 9999;
+            cursor: pointer;
+            border: 2px solid #ffffff;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.8);
         }
-        .install-banner.hide { transform: translateX(-50%) translateY(150px); } /* إخفاء فقط عند إغلاقه يدوياً */
-        .install-info { display: flex; align-items: center; gap: 12px; text-align: right; }
-        .install-icon { width: 45px; height: 45px; border-radius: 50%; object-fit: contain; background: #fff; padding: 2px; border: 2px solid #ff841a; }
-        .install-text h4 { font-size: 0.9rem; font-weight: 800; color: #ffffff; }
-        .install-text p { font-size: 0.72rem; color: #ccc; font-weight: 600; margin-top: 2px; }
-        
-        .install-action-container { display: flex; align-items: center; gap: 12px; }
-        .install-action-btn { 
-            background: #8e3e00; 
-            color: #ffffff; 
-            border: none; 
-            padding: 8px 18px; 
-            border-radius: 8px; 
-            font-size: 0.85rem; 
-            font-weight: 800; 
-            cursor: pointer; 
-            white-space: nowrap; 
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+
+        .floating-install-btn.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1);
+            animation: pulseGlow 2s infinite;
         }
-        .install-close { color: #aaaaaa; font-size: 1.5rem; cursor: pointer; padding: 5px; font-weight: bold; line-height: 1; }
+
+        .floating-install-btn:active {
+            transform: scale(0.9);
+        }
+
+        .install-btn-icon {
+            font-size: 1.2rem;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 8px 25px rgba(212, 93, 0, 0.4); }
+            50% { box-shadow: 0 8px 35px rgba(212, 93, 0, 0.7); }
+            100% { box-shadow: 0 8px 25px rgba(212, 93, 0, 0.4); }
+        }
     </style>
 </head>
 <body>
 
+    <!-- شاشة التحميل -->
     <div id="splash-screen">
         <div class="loader-content">
             <img src="./images/logooo.png" class="loader-logo-big" alt="بيتزا وفطائر أبو فاروق">
@@ -211,6 +221,12 @@
         </div>
     </div>
 
+    <!-- زر التثبيت العائم الذكي -->
+    <button id="floatingInstallBtn" class="floating-install-btn">
+        <span class="install-btn-icon">📥</span>
+        <span class="install-btn-text">تثبيت التطبيق</span>
+    </button>
+
     <div class="sticky-wrapper">
         <header>
             <div class="header-top">
@@ -220,6 +236,7 @@
             </div>
             <span class="header-title-text">بيتزا وفطائر أبو فاروق</span>
 
+            <!-- زرار السلة في اليسار -->
             <div class="header-left-actions">
                 <button class="cart-trigger" onclick="toggleCart(true)" id="cartBtn">
                     <span class="badge" id="cartBadge">0</span>
@@ -231,20 +248,6 @@
     </div>
 
     <main id="menuList" class="menu-list"></main>
-
-    <div class="install-banner" id="installBanner">
-        <div class="install-info">
-            <img src="./images/logooo.png" class="install-icon" alt="لوجو">
-            <div class="install-text">
-                <h4>تطبيق أبو فاروق الرسمي</h4>
-                <p id="installDesc">ثبت التطبيق الآن لطلب أسرع وبدون إنترنت!</p>
-            </div>
-        </div>
-        <div class="install-action-container">
-            <button class="install-action-btn" id="installBtn">تثبيت التطبيق</button>
-            <span class="install-close" onclick="closeInstallBanner()">×</span>
-        </div>
-    </div>
 
     <footer class="restaurant-footer">
         <div class="footer-phones">
@@ -259,6 +262,7 @@
         </div>
     </footer>
 
+    <!-- مودال السلة -->
     <div class="modal" id="cartModal" onclick="if(event.target==this) toggleCart(false)">
         <div class="modal-content">
             <h3 style="margin-bottom: 12px; font-size: 1.1rem; font-weight: 800;">طلباتك</h3>
@@ -291,9 +295,7 @@
         let selectedOrderType = 'دليفري'; 
         let deferredPrompt;
 
-        const installBanner = document.getElementById('installBanner');
-        const installBtn = document.getElementById('installBtn');
-        const installDesc = document.getElementById('installDesc');
+        const floatingBtn = document.getElementById('floatingInstallBtn');
 
         const isIos = () => {
             const userAgent = window.navigator.userAgent.toLowerCase();
@@ -314,45 +316,48 @@
         window.addEventListener('DOMContentLoaded', () => {
             loadMenu();
 
-            // إخفاء الشريط نهائياً إذا تم تثبيته بالفعل
+            // إخفاء الزر نهائياً إذا تم فتح الموقع كتطبيق مثبت بالفعل
             if (isInStandaloneMode()) {
-                if (installBanner) installBanner.style.display = 'none';
+                if (floatingBtn) floatingBtn.style.display = 'none';
                 return;
             }
 
-            // تخصيص الرسالة ونظام العمل حسب نوع الموبايل
+            // تفعيل الزر لبيئة الآيفون لعرض شرح التثبيت
             if (isIos()) {
-                installDesc.innerText = "لتثبيت التطبيق: اضغط على زر 'مشاركة' في أسفل سفاري ثم اختر 'إضافة إلى الشاشة الرئيسية'";
-                installBtn.innerText = "طريقة التثبيت";
-                
-                installBtn.addEventListener('click', () => {
-                    alert("لتثبيت تطبيق أبو فاروق على جهاز الآيفون (iOS) 📱:\n\n1. اضغط على زر 'مشاركة' (Share) أسفل المتصفح (مربع يخرج منه سهم).\n2. اسحب قائمة الخيارات واضغط على 'إضافة إلى الشاشة الرئيسية' (Add to Home Screen).\n3. اضغط على 'إضافة' (Add) في الزاوية العلوية.");
-                });
+                if (floatingBtn) {
+                    floatingBtn.classList.add('show');
+                    floatingBtn.addEventListener('click', () => {
+                        alert("لتثبيت تطبيق أبو فاروق على جهاز الآيفون (iOS) 📱:\n\n1. اضغط على زر 'مشاركة' (Share) أسفل المتصفح (مربع يخرج منه سهم).\n2. اسحب قائمة الخيارات واضغط على 'إضافة إلى الشاشة الرئيسية' (Add to Home Screen).\n3. اضغط على 'إضافة' (Add) في الزاوية العلوية.");
+                    });
+                }
             } else {
-                // للأندرويد
+                // للأندرويد ومتصفح كروم
                 window.addEventListener('beforeinstallprompt', (e) => {
                     e.preventDefault();
-                    deferredPrompt = e; // حفظ الحدث لعرضه عند الضغط
-                });
-
-                installBtn.addEventListener('click', async () => {
-                    if (deferredPrompt) {
-                        deferredPrompt.prompt(); // إظهار نافذة التثبيت الرسمية للمتصفح
-                        const { outcome } = await deferredPrompt.userChoice;
-                        if (outcome === 'accepted') {
-                            closeInstallBanner();
-                        }
-                        deferredPrompt = null;
-                    } else {
-                        alert("لتثبيت التطبيق فوراً:\nاضغط على النقاط الثلاث أعلى المتصفح واطلب 'تثبيت التطبيق' أو 'إضافة للشاشة الرئيسية' 📱");
+                    deferredPrompt = e; // حفظ الحدث
+                    
+                    // إظهار الزر العائم فوراً عندما يصبح التثبيت متاحاً
+                    if (floatingBtn) {
+                        floatingBtn.classList.add('show');
                     }
                 });
+
+                if (floatingBtn) {
+                    floatingBtn.addEventListener('click', async () => {
+                        if (deferredPrompt) {
+                            deferredPrompt.prompt(); // إطلاق نافذة التثبيت الرسمية لكروم
+                            const { outcome } = await deferredPrompt.userChoice;
+                            if (outcome === 'accepted') {
+                                floatingBtn.classList.remove('show');
+                            }
+                            deferredPrompt = null;
+                        } else {
+                            alert("لتثبيت التطبيق فوراً:\nاضغط على النقاط الثلاث أعلى المتصفح واطلب 'تثبيت التطبيق' أو 'إضافة للشاشة الرئيسية' 📱");
+                        }
+                    });
+                }
             }
         });
-
-        function closeInstallBanner() {
-            if (installBanner) installBanner.classList.add('hide');
-        }
 
         function setOrderType(type) {
             selectedOrderType = type;
