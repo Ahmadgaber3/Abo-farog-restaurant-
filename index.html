@@ -192,6 +192,20 @@
         .order-type-toggle { display: flex; gap: 10px; width: 100%; }
         .type-btn { flex: 1; padding: 8px; border-radius: 10px; border: 1.5px solid var(--border-color); background: var(--input-bg); color: var(--main-text); font-weight: 800; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
         .type-btn.active { background: var(--dark-orange); color: #ffffff; border-color: var(--dark-orange); box-shadow: var(--btn-shadow); }
+        
+        /* تصميم نظام البحث المخصص للتوصيل */
+        .delivery-search-container { position: relative; margin-bottom: 10px; }
+        .search-results-list { 
+            position: absolute; top: 100%; left: 0; right: 0; 
+            background: var(--white); border: 1px solid var(--border-color); 
+            border-radius: 10px; max-height: 160px; overflow-y: auto; 
+            z-index: 2500; box-shadow: 0 4px 15px rgba(0,0,0,0.15); 
+            display: none; 
+        }
+        .search-item { padding: 10px 12px; font-size: 0.85rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
+        .search-item:hover { background: rgba(212, 93, 0, 0.08); color: var(--dark-orange); }
+        .search-item-price { font-weight: 800; font-size: 0.8rem; }
+
         .submit-btn { background: var(--dark-orange); color: #ffffff; border: none; padding: 12px; border-radius: 12px; width: 100%; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: var(--btn-shadow); }
 
         /* زر التثبيت العائم النظيف */
@@ -275,10 +289,24 @@
         <div class="modal-content">
             <h3 style="margin-bottom: 12px; font-size: 1.1rem; font-weight: 800;">طلباتك</h3>
             <div id="cartItemsList"></div>
-            <div style="margin: 12px 0; padding: 10px 14px; background: rgba(212, 93, 0, 0.05); border-radius: 12px; display: flex; justify-content: space-between; font-size: 0.9rem;">
-                <b>المجموع</b>
-                <b id="totalAmount">0 جنيه</b>
+            
+            <!-- هيكل الحساب الجديد لتوضيح الدليفري والخصم والمجموع -->
+            <div style="margin: 12px 0; padding: 10px 14px; background: rgba(212, 93, 0, 0.05); border-radius: 12px; display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem;">
+                <div style="display: flex; justify-content: space-between;">
+                    <span>المجموع الفرعي:</span>
+                    <b id="subTotalAmount">0 جنيه</b>
+                </div>
+                <div id="deliveryFeeRow" style="display: flex; justify-content: space-between;">
+                    <span>خدمة التوصيل:</span>
+                    <b id="deliveryFeeAmount">0 جنيه</b>
+                </div>
+                <hr style="border: none; border-top: 1px dashed var(--border-color); margin: 4px 0;">
+                <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 1.05rem; color: var(--dark-orange);">
+                    <span>الإجمالي النهائي:</span>
+                    <b id="totalAmount">0 جنيه</b>
+                </div>
             </div>
+
             <div class="user-fields">
                 <div class="order-type-container">
                     <span class="order-type-title">🛵 نوع الطلب:</span>
@@ -287,9 +315,16 @@
                         <button type="button" class="type-btn" id="btnTakeaway" onclick="setOrderType('تيك أواي')">🛍️ تيك أواي</button>
                     </div>
                 </div>
+                
+                <!-- حقل اختيار منطقة التوصيل السريع بالبحث -->
+                <div class="delivery-search-container" id="deliverySelectArea">
+                    <input type="text" id="deliverySearch" placeholder="🔍 ابحث عن منطقة التوصيل (مثال: السلخانة)" onfocus="showLocationsDropdown()" oninput="filterLocations()">
+                    <div class="search-results-list" id="deliveryDropdownList"></div>
+                </div>
+
                 <input type="text" id="uName" placeholder="الاسم بالكامل">
                 <input type="tel" id="uPhone" placeholder="رقم الموبايل">
-                <input type="text" id="uAddr" placeholder="العنوان بالتفصيل">
+                <input type="text" id="uAddr" placeholder="العنوان بالتفصيل (الشارع / الدور / الشقة)">
             </div>
             <button class="submit-btn" onclick="sendToWA()">تأكيد الطلب</button>
         </div>
@@ -303,6 +338,31 @@
         let selectedOrderType = 'دليفري'; 
         let deferredPrompt = null;
 
+        // قائمة أسعار التوصيل للمناطق المطلوبة
+        const deliveryLocations = [
+            { name: "السلخانة القديمة", price: 35 },
+            { name: "التجاري", price: 30 },
+            { name: "البوابة", price: 20 },
+            { name: "المزلقان", price: 25 },
+            { name: "صنايع", price: 35 },
+            { name: "مدرسة مبارك", price: 40 },
+            { name: "الدايرةالخضرة", price: 50 },
+            { name: "الشرنبية القبلية", price: 80 },
+            { name: "الشرنبية البحرية", price: 90 },
+            { name: "العزبة البحرية", price: 30 },
+            { name: "الشارع الغربي", price: 25 },
+            { name: "الشهرالعقاري", price: 40 },
+            { name: "الازهر", price: 50 },
+            { name: "السوق", price: 20 },
+            { name: "النفق", price: 100 },
+            { name: "النووية", price: 70 },
+            { name: "القري السياحية", price: 150 },
+            { name: "المطار", price: 150 },
+            { name: "تلال", price: 200 }
+        ];
+
+        let selectedLocation = null; // تخزين المنطقة المختارة كـ { name: string, price: number }
+
         // تطبيق الثيم المخزن فوراً عند الفتح لمنع الوميض الأبيض المفاجئ
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -311,6 +371,15 @@
             loadMenu();
             initInstallCheck();
             updateThemeUI(savedTheme);
+            renderLocationsList();
+
+            // غلق قائمة التوصيل عند الضغط خارجها
+            document.addEventListener('click', function(e) {
+                const container = document.querySelector('.delivery-search-container');
+                if (container && !container.contains(e.target)) {
+                    hideLocationsDropdown();
+                }
+            });
         });
 
         // تسجيل الـ Service Worker
@@ -375,24 +444,73 @@
             document.getElementById('floatInstallBtn').style.display = 'none';
         });
 
+        // ================= برمجة التوصيل ومناطق الشحن =================
+
+        function renderLocationsList() {
+            const list = document.getElementById('deliveryDropdownList');
+            list.innerHTML = deliveryLocations.map(loc => `
+                <div class="search-item" onclick="selectLocation('${loc.name}', ${loc.price})">
+                    <span>📍 ${loc.name}</span>
+                    <span class="search-item-price">${loc.price} جنيه</span>
+                </div>
+            `).join('');
+        }
+
+        function filterLocations() {
+            const query = document.getElementById('deliverySearch').value.trim().toLowerCase();
+            const list = document.getElementById('deliveryDropdownList');
+            const items = list.getElementsByClassName('search-item');
+            
+            let visibleCount = 0;
+            for (let i = 0; i < items.length; i++) {
+                const text = items[i].textContent || items[i].innerText;
+                if (text.toLowerCase().includes(query)) {
+                    items[i].style.display = "flex";
+                    visibleCount++;
+                } else {
+                    items[i].style.display = "none";
+                }
+            }
+            list.style.display = visibleCount > 0 ? "block" : "none";
+        }
+
+        function showLocationsDropdown() {
+            document.getElementById('deliveryDropdownList').style.display = 'block';
+            filterLocations();
+        }
+
+        function hideLocationsDropdown() {
+            document.getElementById('deliveryDropdownList').style.display = 'none';
+        }
+
+        function selectLocation(name, price) {
+            selectedLocation = { name, price };
+            document.getElementById('deliverySearch').value = `📍 ${name} (${price} جنيه)`;
+            hideLocationsDropdown();
+            updateCart(); // لإعادة حساب الإجمالي
+        }
+
         // ================= بقية الكود الأساسي للموقع =================
 
         function setOrderType(type) {
             selectedOrderType = type;
             const btnDel = document.getElementById('btnDelivery');
             const btnTak = document.getElementById('btnTakeaway');
+            const deliveryArea = document.getElementById('deliverySelectArea');
+            const addrField = document.getElementById('uAddr');
+
             if (type === 'دليفري') {
                 btnDel.classList.add('active'); btnTak.classList.remove('active');
-                toggleAddressField(true);
+                if (deliveryArea) deliveryArea.style.display = 'block';
+                if (addrField) addrField.style.display = 'block';
             } else {
                 btnTak.classList.add('active'); btnDel.classList.remove('active');
-                toggleAddressField(false);
+                if (deliveryArea) deliveryArea.style.display = 'none';
+                if (addrField) addrField.style.display = 'none';
+                selectedLocation = null; // تصفير التوصيل
+                document.getElementById('deliverySearch').value = '';
             }
-        }
-
-        function toggleAddressField(show) {
-            const addrField = document.getElementById('uAddr');
-            if (addrField) addrField.style.display = show ? 'block' : 'none';
+            updateCart();
         }
 
         function parseCSVLine(text) {
@@ -496,7 +614,6 @@
                             
                             // ---- تبديل المسميات الذكي لقسم المكرونة بالكامل ----
                             let displayName = sizeName;
-                            // تم استخدام الاسم "المكرونة" المطابق لملف الشيت تماماً
                             if (item.category === "المكرونة") { 
                                 if (sizeName === "وسط") displayName = "ريد صوص";
                                 if (sizeName === "كبير") displayName = "وايت صوص";
@@ -547,11 +664,10 @@
 
         function updateCart() {
             const badge = document.getElementById('cartBadge'); if(badge) { badge.innerText = cart.length; badge.classList.toggle('show', cart.length > 0); }
-            currentTotal = 0; const container = document.getElementById('cartItemsList');
+            let subtotal = 0; const container = document.getElementById('cartItemsList');
             container.innerHTML = cart.map((item, idx) => {
-                currentTotal += parseInt(item.price, 10) || 0;
+                subtotal += parseInt(item.price, 10) || 0;
                 
-                // البحث عن الصنف لتحديد قسمه
                 const menuItem = menuData.find(i => i.name === item.name);
                 let displaySize = item.size;
                 
@@ -562,6 +678,21 @@
 
                 return `<div class="cart-item-card"><img src="${item.img}" class="cart-item-img" onerror="this.onerror=null; this.src='${IMAGES_PATH}default.jpg';"><div class="cart-item-info"><span class="cart-item-name">${item.name}</span><span class="cart-item-size">النوع: ${displaySize}</span><span class="cart-item-price">${item.price} جنيه</span></div><span class="remove-btn" onclick="removeFromCart(${idx})">حذف</span></div>`;
             }).join('');
+            
+            // حساب خدمة التوصيل والإجمالي النهائي
+            let deliveryFee = 0;
+            const deliveryRow = document.getElementById('deliveryFeeRow');
+            
+            if (selectedOrderType === 'دليفري' && selectedLocation) {
+                deliveryFee = selectedLocation.price;
+                deliveryRow.style.display = 'flex';
+                document.getElementById('deliveryFeeAmount').innerText = `${deliveryFee} جنيه`;
+            } else {
+                deliveryRow.style.display = 'none';
+            }
+
+            currentTotal = subtotal + deliveryFee;
+            document.getElementById('subTotalAmount').innerText = `${subtotal} جنيه`;
             document.getElementById('totalAmount').innerText = `${currentTotal} جنيه`;
         }
 
@@ -571,9 +702,26 @@
 
         function sendToWA() {
             const n = document.getElementById('uName').value.trim(), p = document.getElementById('uPhone').value.trim(), a = document.getElementById('uAddr').value.trim();
-            if(!n || !p || (selectedOrderType === "دليفري" && !a) || cart.length === 0) return; 
+            
+            // التحقق من المدخلات الأساسية
+            if(!n || !p || cart.length === 0) {
+                alert("برجاء إدخال اسمك ورقم تليفونك أولاً لتأكيد طلبك.");
+                return;
+            }
+            if (selectedOrderType === "دليفري" && !selectedLocation) {
+                alert("برجاء اختيار منطقة التوصيل من قائمة البحث أولاً.");
+                return;
+            }
+            if (selectedOrderType === "دليفري" && !a) {
+                alert("برجاء كتابة عنوانك بالتفصيل.");
+                return;
+            }
+
             let msg = `*طلب جديد - بيتزا وفطائر أبو فاروق*\n──────────────\n👤 *الاسم:* ${n}\n📱 *الموبايل:* ${p}\n🛵 *نوع الطلب:* ${selectedOrderType}\n`;
-            if (selectedOrderType === "دليفري") msg += `📍 *العنوان:* ${a}\n`;
+            
+            if (selectedOrderType === "دليفري") {
+                msg += `📍 *المنطقة:* ${selectedLocation.name}\n📍 *العنوان بالتفصيل:* ${a}\n`;
+            }
             msg += `──────────────\n📦 *الطلبات:*\n`;
             
             const summary = {}; 
@@ -590,7 +738,16 @@
             });
             
             for (const [itemKey, qty] of Object.entries(summary)) msg += `• ${itemKey} × ${qty}\n`;
-            msg += `──────────────\n💰 *الإجمالي النهائي:* ${currentTotal} جنيه\n_شكراً لاختياركم أبو فاروق_ ✨`;
+            msg += `──────────────\n`;
+            
+            // تفصيل الفاتورة النهائية
+            const itemsSubtotal = currentTotal - (selectedLocation ? selectedLocation.price : 0);
+            msg += `💵 *المجموع الفرعي:* ${itemsSubtotal} جنيه\n`;
+            if (selectedOrderType === "دليفري") {
+                msg += `🛵 *خدمة التوصيل:* ${selectedLocation.price} جنيه\n`;
+            }
+            msg += `💰 *الإجمالي النهائي:* ${currentTotal} جنيه\n_شكراً لاختياركم أبو فاروق_ ✨`;
+            
             window.open(`https://wa.me/201145496172?text=${encodeURIComponent(msg)}`, '_blank');
         }
     </script>
